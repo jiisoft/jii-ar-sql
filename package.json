@@ -1,0 +1,29 @@
+{
+  "name": "jii-sql",
+  "version": "0.2.0",
+  "description": "Jii Data",
+  "main": "index.js",
+  "author": "Vladimir Kozhin <affka@affka.ru>",
+  "scripts": {
+    "test": "nodeunit tests/unit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jiisoft/jii-sql"
+  },
+  "keywords": [
+    "yii",
+    "php",
+    "framework",
+    "javascript"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jiisoft/jii-sql",
+  "bugs": {
+    "url": "https://github.com/jiisoft/jii-sql/issues"
+  },
+  "devDependencies": {
+    "jii": "*",
+    "jii-data": "*"
+  }
+}

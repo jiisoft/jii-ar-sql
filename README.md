@@ -1,2 +1,2 @@
-jii-data-sql
+jii-sql
 ============
