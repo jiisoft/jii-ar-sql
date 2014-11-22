@@ -1,6 +1,15 @@
+
 'use strict';
 
-require('../../../../framework/require-server');
+/**
+ * @namespace Jii
+ * @ignore
+ */
+var Jii = require('jii');
+require('./bootstrap');
+
+var tests = Jii.namespace('tests');
+
 require('./DatabaseTestCase.js');
 
 /**
@@ -48,7 +57,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 			test.equals(tableSchemas.length, tableNames.length);
 			Jii._.each(tableSchemas, function(table) {
-				test.strictEqual(table instanceof Jii.data.sql.TableSchema, true);
+				test.strictEqual(table instanceof Jii.sql.TableSchema, true);
 			});
 
 			test.done();
@@ -248,7 +257,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 				size: null,
 				precision: null,
 				scale: null,
-				defaultValue: new Jii.data.sql.Expression('CURRENT_TIMESTAMP')
+				defaultValue: new Jii.sql.Expression('CURRENT_TIMESTAMP')
 			},
 			'bit_col': {
 				type: 'smallint',

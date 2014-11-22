@@ -1,5 +1,5 @@
 {
-  "name": "jii-sql",
+  "name": "jii-ar-sql",
   "version": "0.2.0",
   "description": "Jii Data",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jiisoft/jii-sql"
+    "url": "https://github.com/jiisoft/jii-ar-sql"
   },
   "keywords": [
     "yii",
@@ -18,12 +18,16 @@
     "javascript"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/jiisoft/jii-sql",
+  "homepage": "https://github.com/jiisoft/jii-ar-sql",
   "bugs": {
-    "url": "https://github.com/jiisoft/jii-sql/issues"
+    "url": "https://github.com/jiisoft/jii-ar-sql/issues"
   },
   "devDependencies": {
     "jii": "*",
-    "jii-data": "*"
+    "nodeunit": "^0.9.0"
+  },
+  "dependencies": {
+    "require-all": "0.0.8",
+    "mysql": "^2.5.3"
   }
 }

@@ -7,10 +7,10 @@ module.exports = {
 		fixture: __dirname + '/fixture/cubrid.sql'
 	},*/
 	mysql: {
-		className: 'Jii.data.sql.mysql.Connection',
+		className: 'Jii.sql.mysql.Connection',
 		database: 'jiitest',
-		username: 'root',
-		password: '',
+		username: 'jiitest',
+		password: 'jiitest',
 		fixture: __dirname + '/fixture/mysql.sql'
 	}/*,
 	sqlite: {

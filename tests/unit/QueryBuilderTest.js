@@ -1,6 +1,15 @@
+
 'use strict';
 
-require('../../../../framework/require-server');
+/**
+ * @namespace Jii
+ * @ignore
+ */
+var Jii = require('jii');
+require('./bootstrap');
+
+var tests = Jii.namespace('tests');
+
 require('./DatabaseTestCase.js');
 
 /**
@@ -16,14 +25,14 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 	/**
 	 * @throws \Exception
-	 * @returns {Jii.data.sql.QueryBuilder}
+	 * @returns {Jii.sql.QueryBuilder}
 	 */
 	_getQueryBuilder: function () {
 		var queryBuilder = null;
 
 		switch (this.driverName) {
 			case 'mysql':
-				queryBuilder = new Jii.data.sql.mysql.QueryBuilder();
+				queryBuilder = new Jii.sql.mysql.QueryBuilder();
 				break;
 
 			/*case 'sqlite':
@@ -51,63 +60,63 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 	 */
 	columnTypes: function () {
 		return [
-			[Jii.data.sql.BaseSchema.TYPE_PK, 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
-			[Jii.data.sql.BaseSchema.TYPE_PK + '(8)', 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
-			[Jii.data.sql.BaseSchema.TYPE_PK + ' CHECK (value > 5)', 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
-			[Jii.data.sql.BaseSchema.TYPE_PK + '(8) CHECK (value > 5)', 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
-			[Jii.data.sql.BaseSchema.TYPE_STRING, 'varchar(255)'],
-			[Jii.data.sql.BaseSchema.TYPE_STRING + '(32)', 'varchar(32)'],
-			[Jii.data.sql.BaseSchema.TYPE_STRING + ' CHECK (value LIKE "test%")', 'varchar(255) CHECK (value LIKE "test%")'],
-			[Jii.data.sql.BaseSchema.TYPE_STRING + '(32) CHECK (value LIKE "test%")', 'varchar(32) CHECK (value LIKE "test%")'],
-			[Jii.data.sql.BaseSchema.TYPE_STRING + ' NOT NULL', 'varchar(255) NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_TEXT, 'text'],
-			[Jii.data.sql.BaseSchema.TYPE_TEXT + '(255)', 'text'],
-			[Jii.data.sql.BaseSchema.TYPE_TEXT + ' CHECK (value LIKE "test%")', 'text CHECK (value LIKE "test%")'],
-			[Jii.data.sql.BaseSchema.TYPE_TEXT + '(255) CHECK (value LIKE "test%")', 'text CHECK (value LIKE "test%")'],
-			[Jii.data.sql.BaseSchema.TYPE_TEXT + ' NOT NULL', 'text NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_TEXT + '(255) NOT NULL', 'text NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_SMALLINT, 'smallint(6)'],
-			[Jii.data.sql.BaseSchema.TYPE_SMALLINT + '(8)', 'smallint(8)'],
-			[Jii.data.sql.BaseSchema.TYPE_INTEGER, 'int(11)'],
-			[Jii.data.sql.BaseSchema.TYPE_INTEGER + '(8)', 'int(8)'],
-			[Jii.data.sql.BaseSchema.TYPE_INTEGER + ' CHECK (value > 5)', 'int(11) CHECK (value > 5)'],
-			[Jii.data.sql.BaseSchema.TYPE_INTEGER + '(8) CHECK (value > 5)', 'int(8) CHECK (value > 5)'],
-			[Jii.data.sql.BaseSchema.TYPE_INTEGER + ' NOT NULL', 'int(11) NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_BIGINT, 'bigint(20)'],
-			[Jii.data.sql.BaseSchema.TYPE_BIGINT + '(8)', 'bigint(8)'],
-			[Jii.data.sql.BaseSchema.TYPE_BIGINT + ' CHECK (value > 5)', 'bigint(20) CHECK (value > 5)'],
-			[Jii.data.sql.BaseSchema.TYPE_BIGINT + '(8) CHECK (value > 5)', 'bigint(8) CHECK (value > 5)'],
-			[Jii.data.sql.BaseSchema.TYPE_BIGINT + ' NOT NULL', 'bigint(20) NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_FLOAT, 'float'],
-			[Jii.data.sql.BaseSchema.TYPE_FLOAT + '(16,5)', 'float'],
-			[Jii.data.sql.BaseSchema.TYPE_FLOAT + ' CHECK (value > 5.6)', 'float CHECK (value > 5.6)'],
-			[Jii.data.sql.BaseSchema.TYPE_FLOAT + '(16,5) CHECK (value > 5.6)', 'float CHECK (value > 5.6)'],
-			[Jii.data.sql.BaseSchema.TYPE_FLOAT + ' NOT NULL', 'float NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_DECIMAL, 'decimal(10,0)'],
-			[Jii.data.sql.BaseSchema.TYPE_DECIMAL + '(12,4)', 'decimal(12,4)'],
-			[Jii.data.sql.BaseSchema.TYPE_DECIMAL + ' CHECK (value > 5.6)', 'decimal(10,0) CHECK (value > 5.6)'],
-			[Jii.data.sql.BaseSchema.TYPE_DECIMAL + '(12,4) CHECK (value > 5.6)', 'decimal(12,4) CHECK (value > 5.6)'],
-			[Jii.data.sql.BaseSchema.TYPE_DECIMAL + ' NOT NULL', 'decimal(10,0) NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_DATETIME, 'datetime'],
-			[Jii.data.sql.BaseSchema.TYPE_DATETIME + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "datetime CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
-			[Jii.data.sql.BaseSchema.TYPE_DATETIME + ' NOT NULL', 'datetime NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_TIMESTAMP, 'timestamp'],
-			[Jii.data.sql.BaseSchema.TYPE_TIMESTAMP + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "timestamp CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
-			[Jii.data.sql.BaseSchema.TYPE_TIMESTAMP + ' NOT NULL', 'timestamp NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_TIME, 'time'],
-			[Jii.data.sql.BaseSchema.TYPE_TIME + " CHECK(value BETWEEN '12:00:00' AND '13:01:01')", "time CHECK(value BETWEEN '12:00:00' AND '13:01:01')"],
-			[Jii.data.sql.BaseSchema.TYPE_TIME + ' NOT NULL', 'time NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_DATE, 'date'],
-			[Jii.data.sql.BaseSchema.TYPE_DATE + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "date CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
-			[Jii.data.sql.BaseSchema.TYPE_DATE + ' NOT NULL', 'date NOT NULL'],
-			[Jii.data.sql.BaseSchema.TYPE_BINARY, 'blob'],
-			[Jii.data.sql.BaseSchema.TYPE_BOOLEAN, 'tinyint(1)'],
-			[Jii.data.sql.BaseSchema.TYPE_BOOLEAN + ' NOT NULL DEFAULT 1', 'tinyint(1) NOT NULL DEFAULT 1'],
-			[Jii.data.sql.BaseSchema.TYPE_MONEY, 'decimal(19,4)'],
-			[Jii.data.sql.BaseSchema.TYPE_MONEY + '(16,2)', 'decimal(16,2)'],
-			[Jii.data.sql.BaseSchema.TYPE_MONEY + ' CHECK (value > 0.0)', 'decimal(19,4) CHECK (value > 0.0)'],
-			[Jii.data.sql.BaseSchema.TYPE_MONEY + '(16,2) CHECK (value > 0.0)', 'decimal(16,2) CHECK (value > 0.0)'],
-			[Jii.data.sql.BaseSchema.TYPE_MONEY + ' NOT NULL', 'decimal(19,4) NOT NULL']
+			[Jii.sql.BaseSchema.TYPE_PK, 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
+			[Jii.sql.BaseSchema.TYPE_PK + '(8)', 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
+			[Jii.sql.BaseSchema.TYPE_PK + ' CHECK (value > 5)', 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
+			[Jii.sql.BaseSchema.TYPE_PK + '(8) CHECK (value > 5)', 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
+			[Jii.sql.BaseSchema.TYPE_STRING, 'varchar(255)'],
+			[Jii.sql.BaseSchema.TYPE_STRING + '(32)', 'varchar(32)'],
+			[Jii.sql.BaseSchema.TYPE_STRING + ' CHECK (value LIKE "test%")', 'varchar(255) CHECK (value LIKE "test%")'],
+			[Jii.sql.BaseSchema.TYPE_STRING + '(32) CHECK (value LIKE "test%")', 'varchar(32) CHECK (value LIKE "test%")'],
+			[Jii.sql.BaseSchema.TYPE_STRING + ' NOT NULL', 'varchar(255) NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_TEXT, 'text'],
+			[Jii.sql.BaseSchema.TYPE_TEXT + '(255)', 'text'],
+			[Jii.sql.BaseSchema.TYPE_TEXT + ' CHECK (value LIKE "test%")', 'text CHECK (value LIKE "test%")'],
+			[Jii.sql.BaseSchema.TYPE_TEXT + '(255) CHECK (value LIKE "test%")', 'text CHECK (value LIKE "test%")'],
+			[Jii.sql.BaseSchema.TYPE_TEXT + ' NOT NULL', 'text NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_TEXT + '(255) NOT NULL', 'text NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_SMALLINT, 'smallint(6)'],
+			[Jii.sql.BaseSchema.TYPE_SMALLINT + '(8)', 'smallint(8)'],
+			[Jii.sql.BaseSchema.TYPE_INTEGER, 'int(11)'],
+			[Jii.sql.BaseSchema.TYPE_INTEGER + '(8)', 'int(8)'],
+			[Jii.sql.BaseSchema.TYPE_INTEGER + ' CHECK (value > 5)', 'int(11) CHECK (value > 5)'],
+			[Jii.sql.BaseSchema.TYPE_INTEGER + '(8) CHECK (value > 5)', 'int(8) CHECK (value > 5)'],
+			[Jii.sql.BaseSchema.TYPE_INTEGER + ' NOT NULL', 'int(11) NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_BIGINT, 'bigint(20)'],
+			[Jii.sql.BaseSchema.TYPE_BIGINT + '(8)', 'bigint(8)'],
+			[Jii.sql.BaseSchema.TYPE_BIGINT + ' CHECK (value > 5)', 'bigint(20) CHECK (value > 5)'],
+			[Jii.sql.BaseSchema.TYPE_BIGINT + '(8) CHECK (value > 5)', 'bigint(8) CHECK (value > 5)'],
+			[Jii.sql.BaseSchema.TYPE_BIGINT + ' NOT NULL', 'bigint(20) NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_FLOAT, 'float'],
+			[Jii.sql.BaseSchema.TYPE_FLOAT + '(16,5)', 'float'],
+			[Jii.sql.BaseSchema.TYPE_FLOAT + ' CHECK (value > 5.6)', 'float CHECK (value > 5.6)'],
+			[Jii.sql.BaseSchema.TYPE_FLOAT + '(16,5) CHECK (value > 5.6)', 'float CHECK (value > 5.6)'],
+			[Jii.sql.BaseSchema.TYPE_FLOAT + ' NOT NULL', 'float NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_DECIMAL, 'decimal(10,0)'],
+			[Jii.sql.BaseSchema.TYPE_DECIMAL + '(12,4)', 'decimal(12,4)'],
+			[Jii.sql.BaseSchema.TYPE_DECIMAL + ' CHECK (value > 5.6)', 'decimal(10,0) CHECK (value > 5.6)'],
+			[Jii.sql.BaseSchema.TYPE_DECIMAL + '(12,4) CHECK (value > 5.6)', 'decimal(12,4) CHECK (value > 5.6)'],
+			[Jii.sql.BaseSchema.TYPE_DECIMAL + ' NOT NULL', 'decimal(10,0) NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_DATETIME, 'datetime'],
+			[Jii.sql.BaseSchema.TYPE_DATETIME + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "datetime CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
+			[Jii.sql.BaseSchema.TYPE_DATETIME + ' NOT NULL', 'datetime NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_TIMESTAMP, 'timestamp'],
+			[Jii.sql.BaseSchema.TYPE_TIMESTAMP + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "timestamp CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
+			[Jii.sql.BaseSchema.TYPE_TIMESTAMP + ' NOT NULL', 'timestamp NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_TIME, 'time'],
+			[Jii.sql.BaseSchema.TYPE_TIME + " CHECK(value BETWEEN '12:00:00' AND '13:01:01')", "time CHECK(value BETWEEN '12:00:00' AND '13:01:01')"],
+			[Jii.sql.BaseSchema.TYPE_TIME + ' NOT NULL', 'time NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_DATE, 'date'],
+			[Jii.sql.BaseSchema.TYPE_DATE + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "date CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
+			[Jii.sql.BaseSchema.TYPE_DATE + ' NOT NULL', 'date NOT NULL'],
+			[Jii.sql.BaseSchema.TYPE_BINARY, 'blob'],
+			[Jii.sql.BaseSchema.TYPE_BOOLEAN, 'tinyint(1)'],
+			[Jii.sql.BaseSchema.TYPE_BOOLEAN + ' NOT NULL DEFAULT 1', 'tinyint(1) NOT NULL DEFAULT 1'],
+			[Jii.sql.BaseSchema.TYPE_MONEY, 'decimal(19,4)'],
+			[Jii.sql.BaseSchema.TYPE_MONEY + '(16,2)', 'decimal(16,2)'],
+			[Jii.sql.BaseSchema.TYPE_MONEY + ' CHECK (value > 0.0)', 'decimal(19,4) CHECK (value > 0.0)'],
+			[Jii.sql.BaseSchema.TYPE_MONEY + '(16,2) CHECK (value > 0.0)', 'decimal(16,2) CHECK (value > 0.0)'],
+			[Jii.sql.BaseSchema.TYPE_MONEY + ' NOT NULL', 'decimal(19,4) NOT NULL']
 		];
 	},
 
@@ -162,7 +171,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			test.notStrictEqual(table, null);
 
 			Jii._.each(table.columns, function(column, name) {
-				test.strictEqual(column instanceof Jii.data.sql.ColumnSchema, true);
+				test.strictEqual(column instanceof Jii.sql.ColumnSchema, true);
 				test.strictEqual(Jii._.has(columns, name), true);
 				test.strictEqual(column.name, name);
 			});
@@ -210,7 +219,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 				var expected = item[1];
 				var expectedParams = item[2];
 
-				var query = (new Jii.data.sql.Query()).where(condition);
+				var query = (new Jii.sql.Query()).where(condition);
 				var buildParams = queryBuilder.build(query);
 				var sql = buildParams[0];
 				var params = buildParams[1];

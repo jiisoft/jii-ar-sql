@@ -1,7 +1,17 @@
+
 'use strict';
+
+/**
+ * @namespace Jii
+ * @ignore
+ */
+var Jii = require('jii');
+require('./bootstrap');
 
 var fs = require('fs');
 var config = require('./config');
+
+var tests = Jii.namespace('tests');
 
 /**
  * @class tests.unit.DatabaseTestCase
@@ -15,7 +25,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 	driverName: 'mysql',
 
 	/**
-	 * @type {Jii.data.sql.Connection}
+	 * @type {Jii.sql.Connection}
 	 */
 	db: null,
 
@@ -39,7 +49,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 	/**
 	 * @param {boolean} [reset] whether to clean up the test database
 	 * @param {boolean} [open]  whether to open and populate test database
-	 * @returns {Jii.data.sql.Connection}
+	 * @returns {Jii.sql.Connection}
 	 */
 	getConnection: function (reset, open) {
 		reset = !Jii._.isUndefined(reset) ? reset : true;
@@ -77,7 +87,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 
 		db.open();
 
-		return new Jii.when(function(resolve, reject) {
+		return new Jii.when.promise(function(resolve, reject) {
 			if (fixture === null) {
 				resolve(db);
 				return;

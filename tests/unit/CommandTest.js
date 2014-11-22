@@ -1,7 +1,16 @@
+
 'use strict';
 
-require('../../../../framework/require-server');
+/**
+ * @namespace Jii
+ * @ignore
+ */
+var Jii = require('jii');
+require('./bootstrap');
+
 require('./DatabaseTestCase.js');
+
+var tests = Jii.namespace('tests');
 
 /**
  * @class tests.unit.CommandTest
@@ -78,11 +87,11 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 			return command.execute();
 		}).then(function() {
 
-			test.strictEqual(0, 1, 'Not throw exception Jii.data.sql.SqlQueryException.');
+			test.strictEqual(0, 1, 'Not throw exception Jii.sql.SqlQueryException.');
 			test.done();
 		}, function(exception) {
 
-			test.strictEqual(exception instanceof Jii.data.sql.SqlQueryException, true);
+			test.strictEqual(exception instanceof Jii.sql.SqlQueryException, true);
 			test.done();
 		});
 	},
@@ -195,11 +204,11 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 			return command.execute();
 		}).then(function() {
 
-			test.strictEqual(0, 1, 'Not throw exception Jii.data.sql.IntegrityException.');
+			test.strictEqual(0, 1, 'Not throw exception Jii.sql.IntegrityException.');
 			test.done();
 		}, function(exception) {
 
-			test.strictEqual(exception instanceof Jii.data.sql.SqlQueryException, true);
+			test.strictEqual(exception instanceof Jii.sql.SqlQueryException, true);
 			test.done();
 		});
 	}
