@@ -1,7 +1,7 @@
 {
   "name": "jii-ar-sql",
-  "version": "0.2.0",
-  "description": "Jii Data",
+  "version": "0.3.0",
+  "description": "Jii active record for SQL databases",
   "main": "index.js",
   "author": "Vladimir Kozhin <affka@affka.ru>",
   "scripts": {
@@ -23,7 +23,6 @@
     "url": "https://github.com/jiisoft/jii-ar-sql/issues"
   },
   "devDependencies": {
-    "jii": "*",
     "nodeunit": "^0.9.0"
   },
   "dependencies": {
