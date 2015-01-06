@@ -34,7 +34,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 
 		this.mockApplication();
 
-		this.__super();
+		return this.__super();
 	},
 
 	tearDown: function () {
@@ -43,7 +43,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 		}
 		this.destroyApplication();
 
-		this.__super();
+		return this.__super();
 	},
 
 	/**
@@ -55,7 +55,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 		reset = !Jii._.isUndefined(reset) ? reset : true;
 		open = !Jii._.isUndefined(open) ? open : true;
 
-		if (!reset && this.db) {
+		if (!reset && this.db && this.db.getIsActive()) {
 			return Jii.when.resolve(this.db);
 		}
 
@@ -74,7 +74,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 		return this.prepareDatabase(config, fixture, open).then(function(db) {
 			this.db = db;
 			return this.db;
-		}.bind(this)).catch(Jii.catchHandler());
+		}.bind(this));
 	},
 
 	prepareDatabase: function (config, fixture, open) {
@@ -85,31 +85,31 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 			return Jii.when.resolve(db);
 		}
 
-		db.open();
-
-		return new Jii.when.promise(function(resolve, reject) {
-			if (fixture === null) {
-				resolve(db);
-				return;
-			}
-
-			var lines = fs.readFileSync(fixture).toString().split(';');
-			var i = -1;
-			var execLine = function() {
-				i++;
-				if (i === lines.length) {
+		return db.open().then(function() {
+			return new Jii.when.promise(function(resolve, reject) {
+				if (fixture === null) {
 					resolve(db);
 					return;
 				}
 
-				var sql = lines[i];
-				if (Jii._s.trim(sql) !== '') {
-					db.exec(sql).then(execLine, execLine).catch(Jii.catchHandler());
-				} else {
-					execLine();
-				}
-			};
-			execLine();
+				var lines = fs.readFileSync(fixture).toString().split(';');
+				var i = -1;
+				var execLine = function() {
+					i++;
+					if (i === lines.length) {
+						resolve(db);
+						return;
+					}
+
+					var sql = lines[i];
+					if (Jii._s.trim(sql) !== '') {
+						db.exec(sql).then(execLine, execLine);
+					} else {
+						execLine();
+					}
+				};
+				execLine();
+			});
 		});
 	}
 

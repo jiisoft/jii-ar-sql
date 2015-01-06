@@ -23,7 +23,6 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 	__static: {
 	},
 
-
 	testConstruct: function (test) {
 		this.getConnection(false).then(function(db) {
 
