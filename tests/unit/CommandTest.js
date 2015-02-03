@@ -74,7 +74,7 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 			var command = db.createCommand(sql);
 			return command.execute();
 		}).then(function(result) {
-			test.strictEqual(result, 1);
+			test.strictEqual(result.affectedRows, 1);
 
 			var sql = 'SELECT COUNT(*) FROM customer WHERE name =\'user4\'';
 			var command = db.createCommand(sql);
@@ -160,8 +160,8 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 			var command = db.createCommand(sql);
 			command.bindValue(':email', 'user5@example.com');
 			return command.execute();
-		}).then(function(affectedRows) {
-			test.strictEqual(affectedRows, 1);
+		}).then(function(result) {
+			test.strictEqual(result.affectedRows, 1);
 
 			var sql = 'SELECT name FROM customer WHERE email=:email';
 			var command = db.createCommand(sql);
@@ -184,8 +184,8 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 					['t2@example.com', null, false]
 				]
 			);
-		}).then(function(affectedRows) {
-			test.strictEqual(affectedRows, 2);
+		}).then(function(result) {
+			test.strictEqual(result.affectedRows, 2);
 
 			test.done();
 		});

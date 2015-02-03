@@ -214,14 +214,14 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			'numeric_col': {
 				type: 'decimal',
 				dbType: 'decimal(5,2)',
-				jsType: 'string',
+				jsType: 'number',
 				allowNull: true,
 				autoIncrement: false,
 				enumValues: null,
 				size: 5,
 				precision: 5,
 				scale: 2,
-				defaultValue: '33.22'
+				defaultValue: 33.22
 			},
 			'time': {
 				type: 'timestamp',
