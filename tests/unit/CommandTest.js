@@ -86,7 +86,7 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 			return command.execute();
 		}).then(function() {
 
-			test.strictEqual(0, 1, 'Not throw exception Jii.sql.SqlQueryException.');
+			test.ok(false, 'Not throw exception Jii.sql.SqlQueryException.');
 			test.done();
 		}, function(exception) {
 
@@ -178,13 +178,12 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 		this.getConnection(false).then(function(db) {
 			var command = db.createCommand();
 
-			command.batchInsert('customer',
+			return command.batchInsert('customer',
 				['email', 'name', 'address'], [
 					['t1@example.com', 't1', 't1 address'],
 					['t2@example.com', null, false]
 				]
 			);
-			return command.execute();
 		}).then(function(affectedRows) {
 			test.strictEqual(affectedRows, 2);
 
@@ -203,7 +202,7 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 			return command.execute();
 		}).then(function() {
 
-			test.strictEqual(0, 1, 'Not throw exception Jii.sql.IntegrityException.');
+			test.ok(false, 'Not throw exception Jii.sql.SqlQueryException.');
 			test.done();
 		}, function(exception) {
 

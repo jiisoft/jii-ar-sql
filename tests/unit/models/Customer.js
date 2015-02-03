@@ -66,11 +66,11 @@ var self = Jii.defineClass('tests.unit.models.Customer', {
 
 	// deeply nested table relation
 	getOrderItems: function () {
-		/** @type Jii.sql.ActiveQuery rel */
+		/** @typedef {Jii.sql.ActiveQuery} rel */
 		var rel = this.hasMany(tests.unit.models.Item.className(), {id: 'item_id'});
 
 		return rel.viaTable('order_item', {order_id: 'id'}, function (q) {
-			/* @type Jii.sql.ActiveQuery q */
+			/** @typedef {Jii.sql.ActiveQuery} q */
 			q.viaTable('order', {customer_id: 'id'});
 		}).orderBy('id');
 	},

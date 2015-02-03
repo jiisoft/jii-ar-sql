@@ -144,11 +144,12 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			if (table !== null) {
 				// Clear
 				return this.getConnection(false).then(function(db) {
-					return db.createCommand(queryBuilder.dropTable('column_type_table')).execute();
+					return queryBuilder.dropTable('column_type_table').then(function(sql) {
+						return db.createCommand(sql).execute();
+					});
 				});
 			}
 
-			return Jii.when.resolve();
 		}.bind(this)).then(function() {
 			var i = 1;
 			Jii._.each(this.columnTypes(), function(item) {
@@ -161,7 +162,9 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 			// Create new
 			return this.getConnection(false).then(function(db) {
-				return db.createCommand(queryBuilder.createTable('column_type_table', columns)).execute();
+				return queryBuilder.createTable('column_type_table', columns).then(function(sql) {
+					return db.createCommand(sql).execute();
+				});
 			});
 		}.bind(this)).then(function() {
 
@@ -267,21 +270,29 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		}.bind(this));
 
 		this._getQueryBuilder().then(function(queryBuilder) {
-			Jii._.each(conditions, function(item) {
+			var testNext = function(i) {
+				var item = conditions[i];
+				if (!item) {
+					test.done();
+					return;
+				}
+
 				var condition = item[0];
 				var expected = item[1];
 				var expectedParams = item[2];
 
 				var query = (new Jii.sql.Query()).where(condition);
-				var buildParams = queryBuilder.build(query);
-				var sql = buildParams[0];
-				var params = buildParams[1];
+				queryBuilder.build(query).then(function(buildParams) {
+					var sql = buildParams[0];
+					var params = buildParams[1];
 
-				test.deepEqual(params, expectedParams);
-				test.equals(sql, 'SELECT *' + (Jii._.isEmpty(expected) ? '' : ' WHERE ' + expected));
-			}.bind(this));
+					test.deepEqual(params, expectedParams);
+					test.equals(sql, 'SELECT *' + (Jii._.isEmpty(expected) ? '' : ' WHERE ' + expected));
 
-			test.done();
+					testNext(i+1);
+				});
+			};
+			testNext(0);
 		});
 	},
 
@@ -331,21 +342,29 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		}.bind(this));
 
 		this._getQueryBuilder().then(function(queryBuilder) {
-			Jii._.each(conditions, function(item) {
+			var testNext = function(i) {
+				var item = conditions[i];
+				if (!item) {
+					test.done();
+					return;
+				}
+
 				var condition = item[0];
 				var expected = item[1];
 				var expectedParams = item[2];
 
 				var query = (new Jii.sql.Query()).filterWhere(condition);
-				var buildParams = queryBuilder.build(query);
-				var sql = buildParams[0];
-				var params = buildParams[1];
+				queryBuilder.build(query).then(function(buildParams) {
+					var sql = buildParams[0];
+					var params = buildParams[1];
 
-				test.deepEqual(params, expectedParams);
-				test.equals(sql, 'SELECT *' + (Jii._.isEmpty(expected) ? '' : ' WHERE ' + expected));
-			}.bind(this));
+					test.deepEqual(params, expectedParams);
+					test.equals(sql, 'SELECT *' + (Jii._.isEmpty(expected) ? '' : ' WHERE ' + expected));
 
-			test.done();
+					testNext(i+1);
+				});
+			};
+			testNext(0);
 		});
 	},
 
@@ -357,7 +376,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		// ADD
 		this._getQueryBuilder().then(function(qb) {
 			queryBuilder = qb;
-			return queryBuilder.db.createCommand().addPrimaryKey(pkeyName, tableName, ['id']).execute();
+			return queryBuilder.db.createCommand().addPrimaryKey(pkeyName, tableName, ['id']);
 		}).then(function() {
 
 			return queryBuilder.db.getSchema().loadTableSchema(tableName, true);
@@ -365,7 +384,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			test.equals(tableSchema.primaryKey.length, 1);
 
 			// DROP
-			return queryBuilder.db.createCommand().dropPrimaryKey(pkeyName, tableName).execute();
+			return queryBuilder.db.createCommand().dropPrimaryKey(pkeyName, tableName);
 		}).then(function() {
 
 			// resets the schema
@@ -394,7 +413,13 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		];
 
 		this._getQueryBuilder().then(function(queryBuilder) {
-			Jii._.each(conditions, function(item) {
+			var testNext = function(i) {
+				var item = conditions[i];
+				if (!item) {
+					test.done();
+					return;
+				}
+
 				var condition = item[0];
 				var expected = item[1];
 
@@ -407,21 +432,23 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 					.from('TotalExample t')
 					.where([condition, subQuery]);
 
-				var buildParams = queryBuilder.build(query);
-				var actualQuerySql = buildParams[0];
-				var actualQueryParams = buildParams[1];
+				queryBuilder.build(query).then(function(buildParams) {
+					var actualQuerySql = buildParams[0];
+					var actualQueryParams = buildParams[1];
 
-				test.equals(expected, actualQuerySql);
-				test.deepEqual({}, actualQueryParams);
-			}.bind(this));
+					test.equals(expected, actualQuerySql);
+					test.deepEqual({}, actualQueryParams);
 
-			test.done();
+					testNext(i+1);
+				});
+			};
+			testNext(0);
 		});
 	},
 
 	testBuildWhereExistsWithParameters: function(test) {
 		var expectedQuerySql = this._replaceQuotes(
-			"SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)"
+			"SELECT `id` FROM `TotalExample` `t` WHERE (t.some_column = :some_value) AND (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id)))"
 		);
 		var expectedQueryParams = {':some_value': "asd", ':merchant_id': 6};
 
@@ -439,7 +466,8 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 		this._getQueryBuilder().then(function(queryBuilder) {
 
-			var buildParams = queryBuilder.build(query);
+			return queryBuilder.build(query);
+		}).then(function(buildParams) {
 			var actualQuerySql = buildParams[0];
 			var actualQueryParams = buildParams[1];
 
@@ -452,9 +480,9 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 	testBuildWhereExistsWithArrayParameters: function(test) {
 		var expectedQuerySql = this._replaceQuotes(
-			"SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND ((`w`.`merchant_id`=:qp0) AND (`w`.`user_id`=:qp1)))) AND (`t`.`some_column`=:qp2)"
+			"SELECT `id` FROM `TotalExample` `t` WHERE (`t`.`some_column`=:qp0) AND (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND ((`w`.`merchant_id`=:qp1) AND (`w`.`user_id`=:qp2))))"
 		);
-		var expectedQueryParams = {':qp0': 6, ':qp1': 210, ':qp2': 'asd'};
+		var expectedQueryParams = {':qp0': 'asd', ':qp1': 6, ':qp2': 210};
 
 		var subQuery = new Jii.sql.Query();
 		subQuery.select('1')
@@ -470,7 +498,8 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 		this._getQueryBuilder().then(function(queryBuilder) {
 
-			var buildParams = queryBuilder.build(query);
+			return queryBuilder.build(query);
+		}).then(function(buildParams) {
 			var actualQuerySql = buildParams[0];
 			var actualQueryParams = buildParams[1];
 
@@ -506,7 +535,8 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 		this._getQueryBuilder().then(function(queryBuilder) {
 
-			var buildParams = queryBuilder.build(query);
+			return queryBuilder.build(query);
+		}).then(function(buildParams) {
 			var actualQuerySql = buildParams[0];
 			var actualQueryParams = buildParams[1];
 
@@ -531,7 +561,8 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 		this._getQueryBuilder().then(function(queryBuilder) {
 
-			var buildParams = queryBuilder.build(query);
+			return queryBuilder.build(query);
+		}).then(function(buildParams) {
 			var sql = buildParams[0];
 			var params = buildParams[1];
 
