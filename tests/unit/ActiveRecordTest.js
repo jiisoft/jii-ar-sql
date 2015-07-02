@@ -35,7 +35,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 	setUp: function () {
 
-		return Jii.when.all([
+		return Promise.all([
 				this.__super(),
 				this.getConnection()
 			])
@@ -339,7 +339,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		customerB = new itemClass();
 		test.strictEqual(false, customerA.equals(customerB));
 
-		Jii.when.all([
+		Promise.all([
 			customerClass.findOne(1),
 			customerClass.findOne(2)
 		]).then(function(args) {
@@ -354,7 +354,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 			test.ok(customerA.equals(customerB));
 
-			return Jii.when.all([
+			return Promise.all([
 				customerClass.findOne(1),
 				itemClass.findOne(1)
 			]);
@@ -1219,7 +1219,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		}.bind(this)).then(function(c) {
 			customer = c;
 
-			return Jii.when.all([
+			return Promise.all([
 				customer.load('ordersWithNullFK'),
 				customer.load('expensiveOrdersWithNullFK')
 			]);
@@ -1234,7 +1234,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			return customer.unlinkAll('expensiveOrdersWithNullFK');
 		}).then(function() {
 
-			return Jii.when.all([
+			return Promise.all([
 				customer.load('ordersWithNullFK'),
 				customer.load('expensiveOrdersWithNullFK')
 			]);
@@ -1250,7 +1250,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		}).then(function(c) {
 			customer = c;
 
-			return Jii.when.all([
+			return Promise.all([
 				customer.load('ordersWithNullFK'),
 				customer.load('expensiveOrdersWithNullFK')
 			]);
@@ -1280,7 +1280,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		}.bind(this)).then(function(c) {
 			customer = c;
 
-			return Jii.when.all([
+			return Promise.all([
 				customer.load('orders'),
 				customer.load('expensiveOrders')
 			]);
@@ -1295,7 +1295,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			return customer.unlinkAll('expensiveOrders', true);
 		}).then(function() {
 
-			return Jii.when.all([
+			return Promise.all([
 				customer.load('orders'),
 				customer.load('expensiveOrders')
 			]);
@@ -1311,7 +1311,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		}.bind(this)).then(function(c) {
 			customer = c;
 
-			return Jii.when.all([
+			return Promise.all([
 				customer.load('orders'),
 				customer.load('expensiveOrders')
 			]);
@@ -2088,7 +2088,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			test.ok(orders[0].isRelationPopulated('books'));
 			test.ok(orders[1].isRelationPopulated('books'));
 
-			return Jii.when.all([
+			return Promise.all([
 				orders[0].getBooks().all(),
 				orders[1].getBooks().all()
 			]);
@@ -2307,7 +2307,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 			test.strictEqual(2, orders.length);
 
-			return Jii.when.all([
+			return Promise.all([
 				orders[0].load('customer2'),
 				orders[1].load('customer2')
 			]);
@@ -2326,7 +2326,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 			test.strictEqual(2, orders.length);
 
-			return Jii.when.all([
+			return Promise.all([
 				orders[0].load('customer2'),
 				orders[1].load('customer2')
 			]);
@@ -2375,7 +2375,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		}).then(function(os) {
 			orders = os;
 
-			return Jii.when.all([
+			return Promise.all([
 				orders[0].get('customer2').load('orders2'),
 				orders[1].get('customer2').load('orders2')
 			]);
@@ -2387,7 +2387,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		}).then(function(os) {
 			orders = os;
 
-			return Jii.when.all([
+			return Promise.all([
 				orders[0].get('customer2').load('orders2'),
 				orders[1].get('customer2').load('orders2')
 			]);

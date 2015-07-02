@@ -56,7 +56,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 		open = !Jii._.isUndefined(open) ? open : true;
 
 		if (!reset && this.db && this.db.getIsActive()) {
-			return Jii.when.resolve(this.db);
+			return Promise.resolve(this.db);
 		}
 
 		if (this.db) {
@@ -82,11 +82,11 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 
 		var db = Jii.createObject(config);
 		if (!open) {
-			return Jii.when.resolve(db);
+			return Promise.resolve(db);
 		}
 
 		return db.open().then(function() {
-			return new Jii.when.promise(function(resolve, reject) {
+			return new Promise(function(resolve, reject) {
 				if (fixture === null) {
 					resolve(db);
 					return;
