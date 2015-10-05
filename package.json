@@ -1,6 +1,6 @@
 {
   "name": "jii-ar-sql",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Jii active record for SQL databases",
   "main": "index.js",
   "author": "Vladimir Kozhin <affka@affka.ru>",
