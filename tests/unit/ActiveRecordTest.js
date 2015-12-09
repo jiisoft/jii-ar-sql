@@ -691,7 +691,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			return order.load('items');
 		}).then(function(items) {
 
-			test.deepEqual([], items);
+			test.strictEqual(items.length, 0);
 
 			test.done();
 		});
@@ -2292,9 +2292,8 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 			return customers[0].get('orders2')[0].load('customer2');
 		}).then(function(customer2) {
-			//console.log(customer2, customers[0])
 			test.ok(customer2 === customers[0]);
-			test.ok(Jii._.isEmpty(customers[1].get('orders2')));
+			test.ok(customers[1].get('orders2').isEmpty());
 
 			// lazy loading
 			return tests.unit.models.Customer.findOne(2);
