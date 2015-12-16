@@ -3,6 +3,7 @@
   "version": "0.7.1",
   "description": "Jii active record for SQL databases",
   "main": "index.js",
+  "browser": "index-client.js",
   "author": "Vladimir Kozhin <affka@affka.ru>",
   "scripts": {
     "test": "nodeunit tests/unit"
