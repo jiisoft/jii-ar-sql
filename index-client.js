@@ -1,13 +1,10 @@
-'use strict';
+module.exports = require('jii');
 
-require('jii');
-require('jii-model');
-
-// Load framework files
-require('./lib/ActiveRecord');
-require('./lib/Expression');
-require('./lib/AfterSaveEvent');
-require('./lib/remote/Command');
-require('./lib/remote/Connection');
-require('./lib/remote/Schema');
-require('./lib/remote/TransportInterface');
+require('./lib/ActiveRecord.js');
+require('./lib/AfterSaveEvent.js');
+require('./lib/Expression.js');
+require('./lib/client/remote/ActiveRecordAction.js');
+require('./lib/client/remote/Command.js');
+require('./lib/client/remote/Connection.js');
+require('./lib/client/remote/Schema.js');
+require('./lib/client/remote/TransportInterface.js');

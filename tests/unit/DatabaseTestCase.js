@@ -19,7 +19,7 @@ var tests = Jii.namespace('tests');
  */
 var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 
-	__extends: Jii.base.UnitTest,
+	__extends: 'Jii.base.UnitTest',
 
 	database: null,
 	driverName: 'mysql',

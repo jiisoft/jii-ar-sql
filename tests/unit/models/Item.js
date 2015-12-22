@@ -16,7 +16,7 @@ require('./ActiveRecord.js');
  */
 var self = Jii.defineClass('tests.unit.models.Item', {
 
-	__extends: tests.unit.models.ActiveRecord,
+	__extends: 'tests.unit.models.ActiveRecord',
 
 	__static: {
 

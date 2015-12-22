@@ -15,7 +15,7 @@ var tests = Jii.namespace('tests');
  */
 var self = Jii.defineClass('tests.unit.models.CustomerQuery', {
 
-	__extends: Jii.sql.ActiveQuery,
+	__extends: 'Jii.sql.ActiveQuery',
 
 	__static: {
 	},

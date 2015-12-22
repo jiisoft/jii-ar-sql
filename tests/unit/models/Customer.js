@@ -17,7 +17,7 @@ require('./CustomerQuery.js');
  */
 var self = Jii.defineClass('tests.unit.models.Customer', {
 
-	__extends: tests.unit.models.ActiveRecord,
+	__extends: 'tests.unit.models.ActiveRecord',
 
 	__static: {
 

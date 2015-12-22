@@ -28,7 +28,7 @@ var tests = Jii.namespace('tests');
  */
 var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
-	__extends: tests.unit.DatabaseTestCase,
+	__extends: 'tests.unit.DatabaseTestCase',
 
 	__static: {
 	},

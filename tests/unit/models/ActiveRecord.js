@@ -15,7 +15,7 @@ var tests = Jii.namespace('tests');
  */
 var self = Jii.defineClass('tests.unit.models.ActiveRecord', {
 
-	__extends: Jii.sql.ActiveRecord,
+	__extends: 'Jii.sql.ActiveRecord',
 
 	__static: {
 

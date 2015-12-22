@@ -18,7 +18,7 @@ require('./DatabaseTestCase.js');
  */
 var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
-	__extends: tests.unit.DatabaseTestCase,
+	__extends: 'tests.unit.DatabaseTestCase',
 
 	__static: {
 	},
