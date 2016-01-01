@@ -1,5 +1,6 @@
 module.exports = require('jii');
 
+// AUTO-GENERATED Package files list
 require('./lib/ActiveRecord.js');
 require('./lib/AfterSaveEvent.js');
 require('./lib/Expression.js');
