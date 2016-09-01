@@ -1,6 +1,6 @@
 {
   "name": "jii-ar-sql",
-  "version": "0.9.3",
+  "version": "0.10.0",
   "description": "Jii active record for SQL databases",
   "main": "index.js",
   "browser": "index-client.js",
