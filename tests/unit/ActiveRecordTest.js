@@ -6,6 +6,12 @@
  * @ignore
  */
 var Jii = require('jii');
+var _has = require('lodash/has');
+var _keys = require('lodash/keys');
+var _isObject = require('lodash/isObject');
+var _isEmpty = require('lodash/isEmpty');
+
+var _trim = require('lodash/trim');
 require('./bootstrap');
 
 require('./models/Category.js');
@@ -166,21 +172,21 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			return customerClass.find().asArray().all();
 		}).then(function(customers) {
 			test.strictEqual(3, customers.length);
-			test.ok(Jii._.has(customers[0], 'id'));
-			test.ok(Jii._.has(customers[0], 'name'));
-			test.ok(Jii._.has(customers[0], 'email'));
-			test.ok(Jii._.has(customers[0], 'address'));
-			test.ok(Jii._.has(customers[0], 'status'));
-			test.ok(Jii._.has(customers[1], 'id'));
-			test.ok(Jii._.has(customers[1], 'name'));
-			test.ok(Jii._.has(customers[1], 'email'));
-			test.ok(Jii._.has(customers[1], 'address'));
-			test.ok(Jii._.has(customers[1], 'status'));
-			test.ok(Jii._.has(customers[2], 'id'));
-			test.ok(Jii._.has(customers[2], 'name'));
-			test.ok(Jii._.has(customers[2], 'email'));
-			test.ok(Jii._.has(customers[2], 'address'));
-			test.ok(Jii._.has(customers[2], 'status'));
+			test.ok(_has(customers[0], 'id'));
+			test.ok(_has(customers[0], 'name'));
+			test.ok(_has(customers[0], 'email'));
+			test.ok(_has(customers[0], 'address'));
+			test.ok(_has(customers[0], 'status'));
+			test.ok(_has(customers[1], 'id'));
+			test.ok(_has(customers[1], 'name'));
+			test.ok(_has(customers[1], 'email'));
+			test.ok(_has(customers[1], 'address'));
+			test.ok(_has(customers[1], 'status'));
+			test.ok(_has(customers[2], 'id'));
+			test.ok(_has(customers[2], 'name'));
+			test.ok(_has(customers[2], 'email'));
+			test.ok(_has(customers[2], 'address'));
+			test.ok(_has(customers[2], 'status'));
 
 			test.done();
 
@@ -232,7 +238,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 		// indexBy
 		customerClass.find().indexBy('name').orderBy('id').all().then(function(customers) {
-			test.strictEqual(3, Jii._.keys(customers).length);
+			test.strictEqual(3, _keys(customers).length);
 			test.ok(customers['user1'] instanceof customerClass);
 			test.ok(customers['user2'] instanceof customerClass);
 			test.ok(customers['user3'] instanceof customerClass);
@@ -242,7 +248,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 				return customer.get('id') + '-' + customer.get('name');
 			}).orderBy('id').all();
 		}).then(function(customers) {
-			test.strictEqual(3, Jii._.keys(customers).length);
+			test.strictEqual(3, _keys(customers).length);
 			test.ok(customers['1-user1'] instanceof customerClass);
 			test.ok(customers['2-user2'] instanceof customerClass);
 			test.ok(customers['3-user3'] instanceof customerClass);
@@ -257,44 +263,44 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 		// indexBy + asArray
 		customerClass.find().asArray().indexBy('name').all().then(function(customers) {
-			test.strictEqual(3, Jii._.keys(customers).length);
-			test.ok(Jii._.has(customers['user1'], 'id'));
-			test.ok(Jii._.has(customers['user1'], 'name'));
-			test.ok(Jii._.has(customers['user1'], 'email'));
-			test.ok(Jii._.has(customers['user1'], 'address'));
-			test.ok(Jii._.has(customers['user1'], 'status'));
-			test.ok(Jii._.has(customers['user2'], 'id'));
-			test.ok(Jii._.has(customers['user2'], 'name'));
-			test.ok(Jii._.has(customers['user2'], 'email'));
-			test.ok(Jii._.has(customers['user2'], 'address'));
-			test.ok(Jii._.has(customers['user2'], 'status'));
-			test.ok(Jii._.has(customers['user3'], 'id'));
-			test.ok(Jii._.has(customers['user3'], 'name'));
-			test.ok(Jii._.has(customers['user3'], 'email'));
-			test.ok(Jii._.has(customers['user3'], 'address'));
-			test.ok(Jii._.has(customers['user3'], 'status'));
+			test.strictEqual(3, _keys(customers).length);
+			test.ok(_has(customers['user1'], 'id'));
+			test.ok(_has(customers['user1'], 'name'));
+			test.ok(_has(customers['user1'], 'email'));
+			test.ok(_has(customers['user1'], 'address'));
+			test.ok(_has(customers['user1'], 'status'));
+			test.ok(_has(customers['user2'], 'id'));
+			test.ok(_has(customers['user2'], 'name'));
+			test.ok(_has(customers['user2'], 'email'));
+			test.ok(_has(customers['user2'], 'address'));
+			test.ok(_has(customers['user2'], 'status'));
+			test.ok(_has(customers['user3'], 'id'));
+			test.ok(_has(customers['user3'], 'name'));
+			test.ok(_has(customers['user3'], 'email'));
+			test.ok(_has(customers['user3'], 'address'));
+			test.ok(_has(customers['user3'], 'status'));
 
 			// indexBy callable + asArray
 			return customerClass.find().indexBy(function (customer) {
 				return customer['id'] + '-' + customer['name'];
 			}).asArray().all();
 		}).then(function(customers) {
-			test.strictEqual(3, Jii._.keys(customers).length);
-			test.ok(Jii._.has(customers['1-user1'], 'id'));
-			test.ok(Jii._.has(customers['1-user1'], 'name'));
-			test.ok(Jii._.has(customers['1-user1'], 'email'));
-			test.ok(Jii._.has(customers['1-user1'], 'address'));
-			test.ok(Jii._.has(customers['1-user1'], 'status'));
-			test.ok(Jii._.has(customers['2-user2'], 'id'));
-			test.ok(Jii._.has(customers['2-user2'], 'name'));
-			test.ok(Jii._.has(customers['2-user2'], 'email'));
-			test.ok(Jii._.has(customers['2-user2'], 'address'));
-			test.ok(Jii._.has(customers['2-user2'], 'status'));
-			test.ok(Jii._.has(customers['3-user3'], 'id'));
-			test.ok(Jii._.has(customers['3-user3'], 'name'));
-			test.ok(Jii._.has(customers['3-user3'], 'email'));
-			test.ok(Jii._.has(customers['3-user3'], 'address'));
-			test.ok(Jii._.has(customers['3-user3'], 'status'));
+			test.strictEqual(3, _keys(customers).length);
+			test.ok(_has(customers['1-user1'], 'id'));
+			test.ok(_has(customers['1-user1'], 'name'));
+			test.ok(_has(customers['1-user1'], 'email'));
+			test.ok(_has(customers['1-user1'], 'address'));
+			test.ok(_has(customers['1-user1'], 'status'));
+			test.ok(_has(customers['2-user2'], 'id'));
+			test.ok(_has(customers['2-user2'], 'name'));
+			test.ok(_has(customers['2-user2'], 'email'));
+			test.ok(_has(customers['2-user2'], 'address'));
+			test.ok(_has(customers['2-user2'], 'status'));
+			test.ok(_has(customers['3-user3'], 'id'));
+			test.ok(_has(customers['3-user3'], 'name'));
+			test.ok(_has(customers['3-user3'], 'email'));
+			test.ok(_has(customers['3-user3'], 'address'));
+			test.ok(_has(customers['3-user3'], 'status'));
 
 			test.done();
 		});
@@ -571,7 +577,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		}).then(function(orders) {
 			test.ok(customer.isRelationPopulated('orders'));
 			test.strictEqual(2, orders.length);
-			test.strictEqual(1, Jii._.keys(customer.getRelatedRecords()).length);
+			test.strictEqual(1, _keys(customer.getRelatedRecords()).length);
 
 			delete customer._related.orders;
 			test.ok(!customer.isRelationPopulated('orders'));
@@ -586,7 +592,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		}).then(function(orders) {
 			test.ok(!customer.isRelationPopulated('orders'));
 
-			test.strictEqual(0, Jii._.keys(customer.getRelatedRecords()).length);
+			test.strictEqual(0, _keys(customer.getRelatedRecords()).length);
 
 			test.strictEqual(1, orders.length);
 			test.equal(3, orders[0].get('id'));
@@ -609,7 +615,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			customers = cs;
 			//ksort(customers);
 
-			test.strictEqual(3, Jii._.keys(customers).length);
+			test.strictEqual(3, _keys(customers).length);
 			test.ok(customers[1].isRelationPopulated('orders'));
 			test.ok(customers[2].isRelationPopulated('orders'));
 			test.ok(customers[3].isRelationPopulated('orders'));
@@ -639,7 +645,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			return customer.load('orders')
 		}).then(function(orders) {
 			test.strictEqual(1, orders.length);
-			test.strictEqual(1, Jii._.keys(customer.getRelatedRecords()).length);
+			test.strictEqual(1, _keys(customer.getRelatedRecords()).length);
 
 			// multiple with() calls
 			return orderClass.find().with('customer', 'items').all();
@@ -727,7 +733,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		customerClass.find().with('orders', 'orders.items').indexBy('id').all().then(function(customers) {
 			//ksort(customers);
 
-			test.strictEqual(3, Jii._.keys(customers).length);
+			test.strictEqual(3, _keys(customers).length);
 			test.ok(customers[1].isRelationPopulated('orders'));
 			test.ok(customers[2].isRelationPopulated('orders'));
 			test.ok(customers[3].isRelationPopulated('orders'));
@@ -1686,7 +1692,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 			return order.load('itemsIndexed');
 		}).then(function(items) {
-			test.strictEqual(2, Jii._.keys(items).length);
+			test.strictEqual(2, _keys(items).length);
 			test.ok(!!items[1]);
 			test.ok(!!items[2]);
 
@@ -1696,7 +1702,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 			return order.load('itemsIndexed');
 		}).then(function(items) {
-			test.strictEqual(3, Jii._.keys(items).length);
+			test.strictEqual(3, _keys(items).length);
 			test.ok(!!items[3]);
 			test.ok(!!items[4]);
 			test.ok(!!items[5]);
@@ -1801,7 +1807,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 			return tests.unit.models.Order.find().where({id: 1}).asArray().one();
 		}).then(function(order) {
-			test.ok(Jii._.isObject(order));
+			test.ok(_isObject(order));
 
 			test.done();
 		});
@@ -1844,10 +1850,10 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			return tests.unit.models.Order.find().with('books').orderBy('id').asArray().all();
 		}).then(function(orders) {
 			test.strictEqual(3, orders.length);
-			test.ok(Jii._.isObject(orders[0]['orderItems'][0]));
+			test.ok(_isObject(orders[0]['orderItems'][0]));
 
 			var order = orders[0];
-			test.ok(Jii._.isObject(order));
+			test.ok(_isObject(order));
 			test.equal(1, order['id']);
 			test.strictEqual(2, order['books'].length);
 			test.equal(1, order['books'][0]['id']);
@@ -2344,7 +2350,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		}).then(function(customers) {
 
 			test.strictEqual(customer['orders2'][0]['customer2']['id'], customers[0]['id']);
-			test.ok(Jii._.isEmpty(customers[1]['orders2']));
+			test.ok(_isEmpty(customers[1]['orders2']));
 
 			return tests.unit.models.Order.find().with('customer2').where({id: 1}).all();
 		}).then(function(os) {
@@ -2537,7 +2543,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			test.strictEqual(123, model.get('int_col'));
 			test.strictEqual(456, model.get('int_col2'));
 			test.strictEqual(42, model.get('smallint_col'));
-			test.strictEqual('1337', Jii._s.trim(model.get('char_col')));
+			test.strictEqual('1337', _trim(model.get('char_col')));
 			test.strictEqual('test', model.get('char_col2'));
 			test.strictEqual('test123', model.get('char_col3'));
 			//        this.assertSame(1337.42, model.float_col);
@@ -2600,15 +2606,15 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 			return orders[0].load('orderItems');
 		}).then(function(orderItems) {
-			test.strictEqual(2, Jii._.keys(orderItems).length);
+			test.strictEqual(2, _keys(orderItems).length);
 
 			return orders[1].load('orderItems');
 		}).then(function(orderItems) {
-			test.strictEqual(3, Jii._.keys(orderItems).length);
+			test.strictEqual(3, _keys(orderItems).length);
 
 			return orders[2].load('orderItems');
 		}).then(function(orderItems) {
-			test.strictEqual(1, Jii._.keys(orderItems).length);
+			test.strictEqual(1, _keys(orderItems).length);
 
 			test.done();
 		});

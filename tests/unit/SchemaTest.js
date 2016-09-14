@@ -6,6 +6,12 @@
  * @ignore
  */
 var Jii = require('jii');
+var _each = require('lodash/each');
+var _has = require('lodash/has');
+var _keys = require('lodash/keys');
+var _isArray = require('lodash/isArray');
+var _isObject = require('lodash/isObject');
+var _indexOf = require('lodash/indexOf');
 require('./bootstrap');
 
 var tests = Jii.namespace('tests');
@@ -28,12 +34,12 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			return db.getSchema().loadTableNames();
 		}).then(function(tables) {
 
-			test.notStrictEqual(Jii._.indexOf(tables, 'customer'), -1);
-			test.notStrictEqual(Jii._.indexOf(tables, 'category'), -1);
-			test.notStrictEqual(Jii._.indexOf(tables, 'item'), -1);
-			test.notStrictEqual(Jii._.indexOf(tables, 'order'), -1);
-			test.notStrictEqual(Jii._.indexOf(tables, 'order_item'), -1);
-			test.notStrictEqual(Jii._.indexOf(tables, 'type'), -1);
+			test.notStrictEqual(_indexOf(tables, 'customer'), -1);
+			test.notStrictEqual(_indexOf(tables, 'category'), -1);
+			test.notStrictEqual(_indexOf(tables, 'item'), -1);
+			test.notStrictEqual(_indexOf(tables, 'order'), -1);
+			test.notStrictEqual(_indexOf(tables, 'order_item'), -1);
+			test.notStrictEqual(_indexOf(tables, 'type'), -1);
 
 			test.done();
 		});
@@ -56,7 +62,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			tableNames = tn;
 
 			test.equals(tableSchemas.length, tableNames.length);
-			Jii._.each(tableSchemas, function(table) {
+			_each(tableSchemas, function(table) {
 				test.strictEqual(table instanceof Jii.sql.TableSchema, true);
 			});
 
@@ -79,7 +85,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			schema.loadTableSchema('composite_fk').then(function(table) {
 
 				test.strictEqual(table.foreignKeys.length, 1);
-				test.strictEqual(Jii._.has(table.foreignKeys, 0), true);
+				test.strictEqual(_has(table.foreignKeys, 0), true);
 				test.equal(table.foreignKeys[0][0], 'order_item');
 				test.equal(table.foreignKeys[0].order_id, 'order_id');
 				test.equal(table.foreignKeys[0].item_id, 'item_id');
@@ -292,11 +298,11 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		this.getConnection().then(function(db) {
 			return db.getSchema().loadTableSchema('type', true);
 		}).then(function(table) {
-			var expectedColNames = Jii._.keys(columns).sort();
+			var expectedColNames = _keys(columns).sort();
 			var colNames = table.getColumnNames().sort();
 			test.deepEqual(colNames, expectedColNames);
 
-			Jii._.each(table.columns, function(column, name) {
+			_each(table.columns, function(column, name) {
 				var expected = columns[name];
 
 				test.strictEqual(column.dbType, expected.dbType);
@@ -308,13 +314,13 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 				test.strictEqual(column.precision, expected.precision);
 				test.strictEqual(column.scale, expected.scale);
 
-				if (Jii._.isArray(expected.enumValues)) {
+				if (_isArray(expected.enumValues)) {
 					test.deepEqual(column.enumValues, expected.enumValues);
 				} else {
 					test.strictEqual(column.enumValues, expected.enumValues);
 				}
 
-				if (Jii._.isObject(expected.defaultValue)) {
+				if (_isObject(expected.defaultValue)) {
 					test.equal(column.defaultValue.toString(), expected.defaultValue.toString());
 				} else {
 					test.strictEqual(column.defaultValue, expected.defaultValue);

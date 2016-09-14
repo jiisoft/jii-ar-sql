@@ -6,6 +6,9 @@
  * @ignore
  */
 var Jii = require('jii');
+var _trim = require('lodash/trim');
+var _clone = require('lodash/clone');
+var _isUndefined = require('lodash/isUndefined');
 require('./bootstrap');
 
 var fs = require('fs');
@@ -30,7 +33,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 	db: null,
 
 	setUp: function () {
-		this.database = Jii._.clone(config[this.driverName]);
+		this.database = _clone(config[this.driverName]);
 
 		this.mockApplication();
 
@@ -52,8 +55,8 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 	 * @returns {Jii.sql.Connection}
 	 */
 	getConnection: function (reset, open) {
-		reset = !Jii._.isUndefined(reset) ? reset : true;
-		open = !Jii._.isUndefined(open) ? open : true;
+		reset = !_isUndefined(reset) ? reset : true;
+		open = !_isUndefined(open) ? open : true;
 
 		if (!reset && this.db && this.db.getIsActive()) {
 			return Promise.resolve(this.db);
@@ -102,7 +105,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 					}
 
 					var sql = lines[i];
-					if (Jii._s.trim(sql) !== '') {
+					if (_trim(sql) !== '') {
 						db.exec(sql).then(execLine, execLine);
 					} else {
 						execLine();

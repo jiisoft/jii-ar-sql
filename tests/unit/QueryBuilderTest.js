@@ -6,6 +6,10 @@
  * @ignore
  */
 var Jii = require('jii');
+var _each = require('lodash/each');
+var _has = require('lodash/has');
+var _isEmpty = require('lodash/isEmpty');
+var _indexOf = require('lodash/indexOf');
 require('./bootstrap');
 
 var tests = Jii.namespace('tests');
@@ -122,7 +126,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 	testGetColumnType: function (test) {
 		this._getQueryBuilder().then(function(queryBuilder) {
-			Jii._.each(this.columnTypes(), function(item) {
+			_each(this.columnTypes(), function(item) {
 				var column = item[0];
 				var expected = item[1];
 
@@ -152,7 +156,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 		}.bind(this)).then(function() {
 			var i = 1;
-			Jii._.each(this.columnTypes(), function(item) {
+			_each(this.columnTypes(), function(item) {
 				var column = item[0];
 
 				if (column.substr(0, 2) !== 'pk') {
@@ -173,9 +177,9 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		}.bind(this)).then(function(table) {
 			test.notStrictEqual(table, null);
 
-			Jii._.each(table.columns, function(column, name) {
+			_each(table.columns, function(column, name) {
 				test.strictEqual(column instanceof Jii.sql.ColumnSchema, true);
-				test.strictEqual(Jii._.has(columns, name), true);
+				test.strictEqual(_has(columns, name), true);
 				test.strictEqual(column.name, name);
 			});
 
@@ -265,7 +269,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		];
 
 		// adjust dbms specific escaping
-		Jii._.each(conditions, function(condition, i) {
+		_each(conditions, function(condition, i) {
 			conditions[i][1] = this._replaceQuotes(condition[1]);
 		}.bind(this));
 
@@ -287,7 +291,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 					var params = buildParams[1];
 
 					test.deepEqual(params, expectedParams);
-					test.equals(sql, 'SELECT *' + (Jii._.isEmpty(expected) ? '' : ' WHERE ' + expected));
+					test.equals(sql, 'SELECT *' + (_isEmpty(expected) ? '' : ' WHERE ' + expected));
 
 					testNext(i+1);
 				});
@@ -337,7 +341,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		];
 
 		// adjust dbms specific escaping
-		Jii._.each(conditions, function(condition, i) {
+		_each(conditions, function(condition, i) {
 			conditions[i][1] = this._replaceQuotes(condition[1]);
 		}.bind(this));
 
@@ -359,7 +363,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 					var params = buildParams[1];
 
 					test.deepEqual(params, expectedParams);
-					test.equals(sql, 'SELECT *' + (Jii._.isEmpty(expected) ? '' : ' WHERE ' + expected));
+					test.equals(sql, 'SELECT *' + (_isEmpty(expected) ? '' : ' WHERE ' + expected));
 
 					testNext(i+1);
 				});
@@ -400,7 +404,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 	},
 
 	_replaceQuotes: function(condition) {
-		if (Jii._.indexOf(['mssql', 'mysql', 'sqlite'], this.driverName) === -1) {
+		if (_indexOf(['mssql', 'mysql', 'sqlite'], this.driverName) === -1) {
 			condition = condition.replace(/`/g, '"');
 		}
 		return condition;
