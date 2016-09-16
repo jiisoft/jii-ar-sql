@@ -6,6 +6,7 @@
  * @ignore
  */
 var Jii = require('jii');
+var SqlQueryException = require('../../server/SqlQueryException');
 require('./bootstrap');
 
 require('./DatabaseTestCase.js');
@@ -90,7 +91,7 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 			test.done();
 		}, function(exception) {
 
-			test.strictEqual(exception instanceof Jii.sql.SqlQueryException, true);
+			test.strictEqual(exception instanceof SqlQueryException, true);
 			test.done();
 		});
 	},
@@ -206,7 +207,7 @@ var self = Jii.defineClass('tests.unit.CommandTest', {
 			test.done();
 		}, function(exception) {
 
-			test.strictEqual(exception instanceof Jii.sql.SqlQueryException, true);
+			test.strictEqual(exception instanceof SqlQueryException, true);
 			test.done();
 		});
 	}

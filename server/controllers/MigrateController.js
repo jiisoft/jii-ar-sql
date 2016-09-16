@@ -6,6 +6,9 @@
 'use strict';
 
 var Jii = require('jii');
+var Component = require('jii/base/Component');
+var Console = require('jii-console/server/helpers/Console');
+var Query = require('../../Query');
 var _each = require('lodash/each');
 var BaseMigrateController = require('./BaseMigrateController');
 var fs = require('fs');
@@ -100,7 +103,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.MigrateController', /** @l
                 this.db = this.db === null ?
                     Jii.app.get('db') :
                     (
-                        this.db instanceof Jii.base.Component ?
+                        this.db instanceof Component ?
                             this.db :
                             Jii.createObject(this.db)
                     );
@@ -132,7 +135,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.MigrateController', /** @l
                 return this._createMigrationHistoryTable();
             }
         }).then(() => {
-            return (new Jii.sql.Query()).select(['version', 'apply_time'])
+            return (new Query()).select(['version', 'apply_time'])
                 .from(this.migrationTable)
                 .orderBy('apply_time DESC, version DESC')
                 .limit(limit)
@@ -154,7 +157,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.MigrateController', /** @l
      */
     _createMigrationHistoryTable() {
         var tableName = this.db.getSchema().getRawTableName(this.migrationTable);
-        this.stdout('Creating migration history table "' + tableName + '"...', Jii.helpers.Console.FG_YELLOW);
+        this.stdout('Creating migration history table "' + tableName + '"...', Console.FG_YELLOW);
 
         return this.db.createCommand()
             .createTable(this.migrationTable, {
@@ -168,7 +171,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.MigrateController', /** @l
                         apply_time: Math.round((new Date()).getTime() / 1000)
                     });
             }).then(() => {
-                this.stdout("Done.\n", Jii.helpers.Console.FG_GREEN);
+                this.stdout("Done.\n", Console.FG_GREEN);
             });
     },
 

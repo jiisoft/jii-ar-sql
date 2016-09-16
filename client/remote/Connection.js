@@ -2,6 +2,9 @@
 'use strict';
 
 var Jii = require('jii');
+var InvalidParamException = require('jii/exceptions/InvalidParamException');
+var Collection = require('jii-model/base/Collection');
+var Command = require('./Command');
 var Component = require('jii/base/Component');
 
 /**
@@ -42,7 +45,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql
     getTransport() {
         if (this.transport === null) {
             this.transport = Jii.app.get('comet');
-        } else if (!(this.transport instanceof Jii.base.Component)) {
+        } else if (!(this.transport instanceof Component)) {
             this.transport = Jii.createObject(this.transport);
         }
         return this.transport;
@@ -56,16 +59,16 @@ module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql
     getRootCollection(modelClassName) {
         var modelClass = Jii.namespace(modelClassName);
         if (!modelClass.tableName) {
-            throw new Jii.exceptions.InvalidParamException('Wrong model class for create collection: ' + modelClassName);
+            throw new InvalidParamException('Wrong model class for create collection: ' + modelClassName);
         }
 
         var tableName = modelClass.tableName();
         if (!tableName) {
-            throw new Jii.exceptions.InvalidParamException('Table name is not defined in model: ' + modelClass.className());
+            throw new InvalidParamException('Table name is not defined in model: ' + modelClass.className());
         }
 
         if (!this._rootCollections[tableName]) {
-            this._rootCollections[tableName] = new Jii.base.Collection([], {modelClass: modelClassName});
+            this._rootCollections[tableName] = new Collection([], {modelClass: modelClassName});
         }
         return this._rootCollections[tableName];
     },
@@ -75,7 +78,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql
      * @returns {Jii.sql.remote.Command} the DB command
      */
     createCommand() {
-        return new Jii.sql.remote.Command({
+        return new Command({
             db: this
         });
     },

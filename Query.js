@@ -7,6 +7,7 @@
 'use strict';
 
 var Jii = require('jii');
+var Expression = require('./Expression');
 var _isString = require('lodash/isString');
 var _isEmpty = require('lodash/isEmpty');
 var _isArray = require('lodash/isArray');
@@ -32,7 +33,7 @@ var Component = require('jii/base/Component');
  * For example,
  *
  * ```js
- * query = new Jii.sql.Query();
+ * query = new Query();
  * // compose the query
  * query.select('id, name')
  *     .from('user')
@@ -227,7 +228,7 @@ module.exports = Jii.defineClass('Jii.sql.Query', /** @lends Jii.sql.Query.proto
 	 * For example,
 	 *
 	 * ```js
-	 * query = (new Jii.sql.Query()).from('user');
+	 * query = (new Query()).from('user');
 	 * _each(query.batch(), rows => {
      *     // rows is an array of 10 or fewer rows from user table
      * });
@@ -456,7 +457,7 @@ module.exports = Jii.defineClass('Jii.sql.Query', /** @lends Jii.sql.Query.proto
 		db = db || null;
 
 		var select = this._select;
-		this._select = [new Jii.sql.Expression('1')];
+		this._select = [new Expression('1')];
 
 		return this.createCommand(db).then(command => {
 			return command.queryScalar();
@@ -491,7 +492,7 @@ module.exports = Jii.defineClass('Jii.sql.Query', /** @lends Jii.sql.Query.proto
 			if (_isEmpty(this._groupBy) && _isEmpty(this._union) && !this._distinct) {
 				return command.queryScalar();
 			} else {
-				return (new Jii.sql.Query()).select([selectExpression])
+				return (new this.__static()).select([selectExpression])
 					.from({c: this})
 					.createCommand(command.db)
 					.then(command => {

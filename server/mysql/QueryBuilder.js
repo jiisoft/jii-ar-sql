@@ -2,10 +2,13 @@
 'use strict';
 
 var Jii = require('jii');
+var ApplicationException = require('jii/exceptions/ApplicationException');
+var InvalidParamException = require('jii/exceptions/InvalidParamException');
 var _values = require('lodash/values');
 var _each = require('lodash/each');
 var _first = require('lodash/first');
 var QueryBuilder = require('../QueryBuilder');
+var BaseSchema = require('../BaseSchema');
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -21,22 +24,22 @@ module.exports = Jii.defineClass('Jii.sql.mysql.QueryBuilder', /** @lends Jii.sq
 	 * @type {object} mapping from abstract column types (keys) to physical column types (values).
 	 */
 	typeMap: {
-		[Jii.sql.BaseSchema.TYPE_PK]: 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-		[Jii.sql.BaseSchema.TYPE_BIGPK]: 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-		[Jii.sql.BaseSchema.TYPE_STRING]: 'varchar(255)',
-		[Jii.sql.BaseSchema.TYPE_TEXT]: 'text',
-		[Jii.sql.BaseSchema.TYPE_SMALLINT]: 'smallint(6)',
-		[Jii.sql.BaseSchema.TYPE_INTEGER]: 'int(11)',
-		[Jii.sql.BaseSchema.TYPE_BIGINT]: 'bigint(20)',
-		[Jii.sql.BaseSchema.TYPE_FLOAT]: 'float',
-		[Jii.sql.BaseSchema.TYPE_DECIMAL]: 'decimal(10,0)',
-		[Jii.sql.BaseSchema.TYPE_DATETIME]: 'datetime',
-		[Jii.sql.BaseSchema.TYPE_TIMESTAMP]: 'timestamp',
-		[Jii.sql.BaseSchema.TYPE_TIME]: 'time',
-		[Jii.sql.BaseSchema.TYPE_DATE]: 'date',
-		[Jii.sql.BaseSchema.TYPE_BINARY]: 'blob',
-		[Jii.sql.BaseSchema.TYPE_BOOLEAN]: 'tinyint(1)',
-		[Jii.sql.BaseSchema.TYPE_MONEY]: 'decimal(19,4)'
+		[BaseSchema.TYPE_PK]: 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		[BaseSchema.TYPE_BIGPK]: 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		[BaseSchema.TYPE_STRING]: 'varchar(255)',
+		[BaseSchema.TYPE_TEXT]: 'text',
+		[BaseSchema.TYPE_SMALLINT]: 'smallint(6)',
+		[BaseSchema.TYPE_INTEGER]: 'int(11)',
+		[BaseSchema.TYPE_BIGINT]: 'bigint(20)',
+		[BaseSchema.TYPE_FLOAT]: 'float',
+		[BaseSchema.TYPE_DECIMAL]: 'decimal(10,0)',
+		[BaseSchema.TYPE_DATETIME]: 'datetime',
+		[BaseSchema.TYPE_TIMESTAMP]: 'timestamp',
+		[BaseSchema.TYPE_TIME]: 'time',
+		[BaseSchema.TYPE_DATE]: 'date',
+		[BaseSchema.TYPE_BINARY]: 'blob',
+		[BaseSchema.TYPE_BOOLEAN]: 'tinyint(1)',
+		[BaseSchema.TYPE_MONEY]: 'decimal(19,4)'
 	},
 
 	/**
@@ -53,7 +56,7 @@ module.exports = Jii.defineClass('Jii.sql.mysql.QueryBuilder', /** @lends Jii.sq
 
 		return this.db.createCommand(sql).queryOne().then(row => {
 			if (row === null) {
-				throw new Jii.exceptions.ApplicationException('Unable to find column `' + oldName + '` in table `' + table + '`.');
+				throw new ApplicationException('Unable to find column `' + oldName + '` in table `' + table + '`.');
 			}
 
 			var sql = row['Create Table'] || _values(row)[1];
@@ -112,10 +115,10 @@ module.exports = Jii.defineClass('Jii.sql.mysql.QueryBuilder', /** @lends Jii.sq
 
 		var table = this.db.getTableSchema(tableName);
 		if (table === null) {
-			throw new Jii.exceptions.InvalidParamException('Table not found: `' + tableName + '`');
+			throw new InvalidParamException('Table not found: `' + tableName + '`');
 		}
 		if (table.sequenceName === null) {
-			throw new Jii.exceptions.InvalidParamException('There is no sequence associated with table `' + tableName + '`.');
+			throw new InvalidParamException('There is no sequence associated with table `' + tableName + '`.');
 		}
 
 		var quoteTableName = this.db.quoteTableName(tableName);

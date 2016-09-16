@@ -6,6 +6,8 @@
 'use strict';
 
 var Jii = require('jii');
+var FilterBuilder = require('../../FilterBuilder');
+var ModelSchema = require('jii-model/base/ModelSchema');
 var _isObject = require('lodash/isObject');
 var _keys = require('lodash/keys');
 var Object = require('jii/base/Object');
@@ -39,8 +41,8 @@ module.exports = Jii.defineClass('Jii.sql.remote.Schema', /** @lends Jii.sql.rem
      * @returns {Jii.base.ModelSchema}
      */
     getTableSchema(name) {
-        if (_isObject(this.tables[name]) && !(this.tables[name] instanceof Jii.base.ModelSchema)) {
-            this.tables[name] = Jii.base.ModelSchema.createFromObject(this.tables[name]);
+        if (_isObject(this.tables[name]) && !(this.tables[name] instanceof ModelSchema)) {
+            this.tables[name] = ModelSchema.createFromObject(this.tables[name]);
         }
 
         return this.tables[name] || null;
@@ -54,7 +56,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.Schema', /** @lends Jii.sql.rem
      * @return {Jii.sql.FilterBuilder}
      */
     createFilterBuilder() {
-        return new Jii.sql.FilterBuilder();
+        return new FilterBuilder();
     }
 
 });

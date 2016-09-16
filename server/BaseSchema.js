@@ -6,6 +6,10 @@
 'use strict';
 
 var Jii = require('jii');
+var NotSupportedException = require('jii/exceptions/NotSupportedException');
+var QueryBuilder = require('./QueryBuilder');
+var FilterBuilder = require('../FilterBuilder');
+var ColumnSchemaBuilder = require('./ColumnSchemaBuilder');
 var _isUndefined = require('lodash/isUndefined');
 var _each = require('lodash/each');
 var _has = require('lodash/has');
@@ -170,7 +174,7 @@ module.exports = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSc
 	 * @return {Jii.sql.TableSchema} DBMS-dependent table metadata, null if the table does not exist.
 	 */
 	_loadTableSchema(name) {
-		throw new Jii.exceptions.NotSupportedException('Not implemented');
+		throw new NotSupportedException('Not implemented');
 	},
 
 	/**
@@ -214,14 +218,14 @@ module.exports = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSc
 	 * @return {Jii.sql.QueryBuilder} query builder instance
 	 */
 	createQueryBuilder() {
-		return new Jii.sql.QueryBuilder(this.db);
+		return new QueryBuilder(this.db);
 	},
 
 	/**
 	 * @return {Jii.sql.FilterBuilder}
 	 */
     createFilterBuilder() {
-		return new Jii.sql.FilterBuilder();
+		return new FilterBuilder();
 	},
 
     /**
@@ -237,7 +241,7 @@ module.exports = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSc
     createColumnSchemaBuilder(type, length) {
         length = length || null;
 
-        return new Jii.sql.ColumnSchemaBuilder(type, length);
+        return new ColumnSchemaBuilder(type, length);
     },
 
 	/**
@@ -256,7 +260,7 @@ module.exports = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSc
 	 * @throws NotSupportedException if this method is called
 	 */
 	_findTableNames(schema) {
-		throw new Jii.exceptions.NotSupportedException(this.className() + ' does not support fetching all table names.');
+		throw new NotSupportedException(this.className() + ' does not support fetching all table names.');
 	},
 
 	/**
@@ -277,7 +281,7 @@ module.exports = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSc
 	 * @throws NotSupportedException if this method is called
 	 */
 	findUniqueIndexes(table) {
-		throw new Jii.exceptions.NotSupportedException(this.className() + ' does not support getting unique indexes information.');
+		throw new NotSupportedException(this.className() + ' does not support getting unique indexes information.');
 	},
 
 	/**
@@ -346,7 +350,7 @@ module.exports = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSc
 				return "'"+str+"'";
 		}
 
-		throw new Jii.exceptions.NotSupportedException('BaseSchema.quote() not support `' + typeof str + '` value: ' + str);
+		throw new NotSupportedException('BaseSchema.quote() not support `' + typeof str + '` value: ' + str);
 	},
 
 	/**

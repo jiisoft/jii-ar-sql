@@ -6,12 +6,13 @@
 'use strict';
 
 var Jii = require('jii');
+var Expression = require('./Expression');
+var InvalidConfigException = require('jii/exceptions/InvalidConfigException');
 var _isEmpty = require('lodash/isEmpty');
 var _each = require('lodash/each');
 var _has = require('lodash/has');
 var _keys = require('lodash/keys');
 var _snakeCase = require('lodash/snakeCase');
-
 var ActiveRecord = require('jii-model/base/ActiveRecord');
 
 /**
@@ -97,7 +98,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveRecord', /** @lends Jii.sql.Acti
 			_each(counters, (value, name) => {
 				var params = {};
 				params[':bp{' + n + '}'] = value;
-				counters[name] = new Jii.sql.Expression('[[' + name + ']]+:bp{' + n + '}', params);
+				counters[name] = new Expression('[[' + name + ']]+:bp{' + n + '}', params);
 				n++;
 			});
 
@@ -130,7 +131,8 @@ module.exports = Jii.defineClass('Jii.sql.ActiveRecord', /** @lends Jii.sql.Acti
 		 * @inheritdoc
 		 */
 		find() {
-			return new Jii.sql.ActiveQuery(this);
+			var ActiveQuery = require('./ActiveQuery');
+			return new ActiveQuery(this);
 		},
 
 		/**
@@ -156,7 +158,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveRecord', /** @lends Jii.sql.Acti
 		getTableSchema() {
 			var schema = this.getDb().getTableSchema(this.tableName());
 			if (schema === null) {
-				throw new Jii.exceptions.InvalidConfigException("The table does not exist: " + this.tableName());
+				throw new InvalidConfigException("The table does not exist: " + this.tableName());
 			}
 
 			return schema;

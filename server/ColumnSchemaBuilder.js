@@ -6,6 +6,7 @@
 'use strict';
 
 var Jii = require('jii');
+var Expression = require('../Expression');
 var _isArray = require('lodash/isArray');
 var Object = require('jii/base/Object');
 
@@ -112,7 +113,7 @@ module.exports = Jii.defineClass('Jii.sql.ColumnSchemaBuilder', /** @lends Jii.s
      * @returns {Jii.sql.ColumnSchemaBuilder}
      */
     defaultExpression(value) {
-        this._default = new Jii.sql.Expression(value);
+        this._default = new Expression(value);
         return this;
     },
 

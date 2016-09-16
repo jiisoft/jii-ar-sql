@@ -6,6 +6,10 @@
 'use strict';
 
 var Jii = require('jii');
+var QueryBuilder = require('./QueryBuilder');
+var TableSchema = require('../TableSchema');
+var Expression = require('../../Expression');
+var SqlQueryException = require('../SqlQueryException');
 var _has = require('lodash/has');
 var _each = require('lodash/each');
 var _values = require('lodash/values');
@@ -16,7 +20,7 @@ var BaseSchema = require('../BaseSchema');
 
 /**
  * @class Jii.sql.mysql.Schema
- * @extends Jii.sql.BaseSchema
+ * @extends BaseSchema
  */
 module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysql.Schema.prototype */{
 
@@ -26,33 +30,33 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysq
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
 	typeMap: {
-		tinyint: Jii.sql.BaseSchema.TYPE_SMALLINT,
-		bit: Jii.sql.BaseSchema.TYPE_SMALLINT,
-		smallint: Jii.sql.BaseSchema.TYPE_SMALLINT,
-		mediumint: Jii.sql.BaseSchema.TYPE_INTEGER,
-		int: Jii.sql.BaseSchema.TYPE_INTEGER,
-		integer: Jii.sql.BaseSchema.TYPE_INTEGER,
-		bigint: Jii.sql.BaseSchema.TYPE_BIGINT,
-		float: Jii.sql.BaseSchema.TYPE_FLOAT,
-		double: Jii.sql.BaseSchema.TYPE_FLOAT,
-		real: Jii.sql.BaseSchema.TYPE_FLOAT,
-		decimal: Jii.sql.BaseSchema.TYPE_DECIMAL,
-		numeric: Jii.sql.BaseSchema.TYPE_DECIMAL,
-		tinytext: Jii.sql.BaseSchema.TYPE_TEXT,
-		mediumtext: Jii.sql.BaseSchema.TYPE_TEXT,
-		longtext: Jii.sql.BaseSchema.TYPE_TEXT,
-		longblob: Jii.sql.BaseSchema.TYPE_BINARY,
-		blob: Jii.sql.BaseSchema.TYPE_BINARY,
-		text: Jii.sql.BaseSchema.TYPE_TEXT,
-		varchar: Jii.sql.BaseSchema.TYPE_STRING,
-		string: Jii.sql.BaseSchema.TYPE_STRING,
-		char: Jii.sql.BaseSchema.TYPE_STRING,
-		datetime: Jii.sql.BaseSchema.TYPE_DATETIME,
-		year: Jii.sql.BaseSchema.TYPE_DATE,
-		date: Jii.sql.BaseSchema.TYPE_DATE,
-		time: Jii.sql.BaseSchema.TYPE_TIME,
-		timestamp: Jii.sql.BaseSchema.TYPE_TIMESTAMP,
-		enum: Jii.sql.BaseSchema.TYPE_STRING
+		tinyint: BaseSchema.TYPE_SMALLINT,
+		bit: BaseSchema.TYPE_SMALLINT,
+		smallint: BaseSchema.TYPE_SMALLINT,
+		mediumint: BaseSchema.TYPE_INTEGER,
+		int: BaseSchema.TYPE_INTEGER,
+		integer: BaseSchema.TYPE_INTEGER,
+		bigint: BaseSchema.TYPE_BIGINT,
+		float: BaseSchema.TYPE_FLOAT,
+		double: BaseSchema.TYPE_FLOAT,
+		real: BaseSchema.TYPE_FLOAT,
+		decimal: BaseSchema.TYPE_DECIMAL,
+		numeric: BaseSchema.TYPE_DECIMAL,
+		tinytext: BaseSchema.TYPE_TEXT,
+		mediumtext: BaseSchema.TYPE_TEXT,
+		longtext: BaseSchema.TYPE_TEXT,
+		longblob: BaseSchema.TYPE_BINARY,
+		blob: BaseSchema.TYPE_BINARY,
+		text: BaseSchema.TYPE_TEXT,
+		varchar: BaseSchema.TYPE_STRING,
+		string: BaseSchema.TYPE_STRING,
+		char: BaseSchema.TYPE_STRING,
+		datetime: BaseSchema.TYPE_DATETIME,
+		year: BaseSchema.TYPE_DATE,
+		date: BaseSchema.TYPE_DATE,
+		time: BaseSchema.TYPE_TIME,
+		timestamp: BaseSchema.TYPE_TIMESTAMP,
+		enum: BaseSchema.TYPE_STRING
 	},
 
 	/**
@@ -80,7 +84,7 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysq
 	 * @return {Jii.sql.mysql.QueryBuilder} query builder instance
 	 */
 	createQueryBuilder() {
-		return new Jii.sql.mysql.QueryBuilder(this.db);
+		return new QueryBuilder(this.db);
 	},
 
 	/**
@@ -89,7 +93,7 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysq
 	 * @return {Jii.sql.TableSchema} driver dependent table metadata. Null if the table does not exist.
 	 */
 	_loadTableSchema(name) {
-		var table = new Jii.sql.TableSchema();
+		var table = new TableSchema();
 		this._resolveTableNames(table, name);
 
 		return this._findColumns(table).then(() => {
@@ -178,7 +182,7 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysq
 
 		if (!column.isPrimaryKey) {
 			if (column.type === 'timestamp' && info.Default === 'CURRENT_TIMESTAMP') {
-				column.defaultValue = new Jii.sql.Expression('CURRENT_TIMESTAMP');
+				column.defaultValue = new Expression('CURRENT_TIMESTAMP');
 			} else if (type === 'bit') {
 				column.defaultValue = _trimStart(_trimEnd(info.Default, '\''), 'b\'');
 			} else {
@@ -200,7 +204,7 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysq
 
 		return this.db.createCommand(sql).queryAll().then(columns => {
 			if (columns === false) {
-				return Promise.reject(new Jii.sql.SqlQueryException('Can not get metadata of table `' + table.name + '`'));
+				return Promise.reject(new SqlQueryException('Can not get metadata of table `' + table.name + '`'));
 			}
 
 			_each(columns, info => {
@@ -240,7 +244,7 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysq
 
 		return this.db.createCommand(sql).queryOne().then(row => {
 			if (row === false) {
-				return Promise.reject(new Jii.sql.SqlQueryException('Can not get CREATE TABLE sql for table `' + table.name + '`'));
+				return Promise.reject(new SqlQueryException('Can not get CREATE TABLE sql for table `' + table.name + '`'));
 			}
 
 			return _has(row, 'Create Table') ?
@@ -354,7 +358,7 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysq
 
 		var sql = 'SHOW TABLES';
 		if (schema !== '') {
-			sql += ' FROM '.this.quoteSimpleTableName(schema);
+			sql += ' FROM ' + this.quoteSimpleTableName(schema);
 		}
 
 		return this.db.createCommand(sql).queryColumn();

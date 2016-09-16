@@ -6,6 +6,8 @@
 'use strict';
 
 var Jii = require('jii');
+var Exception = require('jii-console/server/Exception');
+var Console = require('jii-console/server/helpers/Console');
 var _isEmpty = require('lodash/isEmpty');
 var _each = require('lodash/each');
 var _keys = require('lodash/keys');
@@ -112,7 +114,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             var path = Jii.getAlias(this.migrationPath);
             if (!fs.existsSync(path)) {
                 if (action.id !== 'create') {
-                    throw new Jii.console.Exception("Migration failed. Directory specified in migrationPath doesn't exist: " + this.migrationPath);
+                    throw new Exception("Migration failed. Directory specified in migrationPath doesn't exist: " + this.migrationPath);
                 }
                 fs.mkdirSync(path);
             }
@@ -148,7 +150,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
     _actionUpInternal(limit) {
         return this._getNewMigrations().then(migrations => {
             if (migrations.length === 0) {
-                this.stdout("No new migration found. Your system is up-to-date.\n", Jii.helpers.Console.FG_GREEN);
+                this.stdout("No new migration found. Your system is up-to-date.\n", Console.FG_GREEN);
 
                 return this.__static.EXIT_CODE_NORMAL;
             }
@@ -161,9 +163,9 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
 
             var n = migrations.length;
             if (n === total) {
-                this.stdout("Total " + n + " new " + (n === 1 ? 'migration' : 'migrations') + " to be applied:\n", Jii.helpers.Console.FG_YELLOW);
+                this.stdout("Total " + n + " new " + (n === 1 ? 'migration' : 'migrations') + " to be applied:\n", Console.FG_YELLOW);
             } else {
-                this.stdout("Total " + n + " out of " + total + " new " + (total === 1 ? 'migration' : 'migrations') + " to be applied:\n", Jii.helpers.Console.FG_YELLOW);
+                this.stdout("Total " + n + " out of " + total + " new " + (total === 1 ? 'migration' : 'migrations') + " to be applied:\n", Console.FG_YELLOW);
             }
 
             _each(migrations, migration => {
@@ -182,8 +184,8 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                     if (migration) {
                         return this._migrateUp(migration).then(success => {
                             if (!success) {
-                                this.stdout("\n" + applied + " from " + n + " " + (applied === 1 ? 'migration was' : 'migrations were') + " applied.\n", Jii.helpers.Console.FG_RED);
-                                this.stdout("\nMigration failed. The rest of the migrations are canceled.\n", Jii.helpers.Console.FG_RED);
+                                this.stdout("\n" + applied + " from " + n + " " + (applied === 1 ? 'migration was' : 'migrations were') + " applied.\n", Console.FG_RED);
+                                this.stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console.FG_RED);
 
                                 return this.__static.EXIT_CODE_ERROR;
                             }
@@ -192,8 +194,8 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                             return migrateQueueFn(migrations, i + 1);
                         });
                     } else {
-                        this.stdout("\n" + n + " " + (n === 1 ? 'migration was' : 'migrations were') + " applied.\n", Jii.helpers.Console.FG_GREEN);
-                        this.stdout("\nMigrated up successfully.\n", Jii.helpers.Console.FG_GREEN);
+                        this.stdout("\n" + n + " " + (n === 1 ? 'migration was' : 'migrations were') + " applied.\n", Console.FG_GREEN);
+                        this.stdout("\nMigrated up successfully.\n", Console.FG_GREEN);
 
                         return Promise.resolve()
                     }
@@ -230,13 +232,13 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
         } else {
             limit = parseInt(limit);
             if (limit < 1) {
-                throw new Jii.console.Exception('The step argument must be greater than 0.');
+                throw new Exception('The step argument must be greater than 0.');
             }
         }
 
         return this._getMigrationHistory(limit).then(migrations => {
             if (_isEmpty(migrations)) {
-                this.stdout("No migration has been done before.\n", Jii.helpers.Console.FG_YELLOW);
+                this.stdout("No migration has been done before.\n", Console.FG_YELLOW);
 
                 return this.__static.EXIT_CODE_NORMAL;
             }
@@ -244,7 +246,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             migrations = _keys(migrations);
 
             var n = migrations.length;
-            this.stdout("Total " + n + " " + (n === 1 ? 'migration' : 'migrations') + " to be reverted:\n", Jii.helpers.Console.FG_YELLOW);
+            this.stdout("Total " + n + " " + (n === 1 ? 'migration' : 'migrations') + " to be reverted:\n", Console.FG_YELLOW);
             _each(migrations, migration => {
                 this.stdout("\t" + migration + "\n");
             });
@@ -261,8 +263,8 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                     if (migration) {
                         return this._migrateDown(migration).then(success => {
                             if (!success) {
-                                this.stdout("\n" + reverted + " from " + n + " " + (reverted === 1 ? 'migration was' : 'migrations were') + " reverted.\n", Jii.helpers.Console.FG_RED);
-                                this.stdout("\nMigration failed. The rest of the migrations are canceled.\n", Jii.helpers.Console.FG_RED);
+                                this.stdout("\n" + reverted + " from " + n + " " + (reverted === 1 ? 'migration was' : 'migrations were') + " reverted.\n", Console.FG_RED);
+                                this.stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console.FG_RED);
 
                                 return this.__static.EXIT_CODE_ERROR;
                             }
@@ -271,8 +273,8 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                             return migrateQueueFn(migrations, i + 1);
                         });
                     } else {
-                        this.stdout("\n" + n + " " + (n === 1 ? 'migration was' : 'migrations were') + " reverted.\n", Jii.helpers.Console.FG_GREEN);
-                        this.stdout("\nMigrated down successfully.\n", Jii.helpers.Console.FG_GREEN);
+                        this.stdout("\n" + n + " " + (n === 1 ? 'migration was' : 'migrations were') + " reverted.\n", Console.FG_GREEN);
+                        this.stdout("\nMigrated down successfully.\n", Console.FG_GREEN);
 
                         return Promise.resolve()
                     }
@@ -308,13 +310,13 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
         } else {
             limit = parseInt(limit);
             if (limit < 1) {
-                throw new Jii.console.Exception('The step argument must be greater than 0.');
+                throw new Exception('The step argument must be greater than 0.');
             }
         }
 
         return this._getMigrationHistory(limit).then(migrations => {
             if (_isEmpty(migrations)) {
-                this.stdout("No migration has been done before.\n", Jii.helpers.Console.FG_YELLOW);
+                this.stdout("No migration has been done before.\n", Console.FG_YELLOW);
 
                 return this.__static.EXIT_CODE_NORMAL;
             }
@@ -322,7 +324,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             migrations = _keys(migrations);
 
             var n = migrations.length;
-            this.stdout("Total " + n + " " + (n === 1 ? 'migration' : 'migrations') + " to be redone:\n", Jii.helpers.Console.FG_YELLOW);
+            this.stdout("Total " + n + " " + (n === 1 ? 'migration' : 'migrations') + " to be redone:\n", Console.FG_YELLOW);
             _each(migrations, migration => {
                 this.stdout("\t" + migration + "\n");
             });
@@ -338,7 +340,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                     if (migration) {
                         return this._migrateDown(migration).then(success => {
                             if (!success) {
-                                this.stdout("\nMigration failed. The rest of the migrations are canceled.\n", Jii.helpers.Console.FG_RED);
+                                this.stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console.FG_RED);
                                 return this.__static.EXIT_CODE_ERROR;
                             }
 
@@ -356,7 +358,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                         if (migration) {
                             return this._migrateUp(migration).then(success => {
                                 if (!success) {
-                                    this.stdout("\nMigration failed. The rest of the migrations migrations are canceled.\n", Jii.helpers.Console.FG_RED);
+                                    this.stdout("\nMigration failed. The rest of the migrations migrations are canceled.\n", Console.FG_RED);
 
                                     return this.__static.EXIT_CODE_ERROR;
                                 }
@@ -364,8 +366,8 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                                 return migrateUpQueueFn(migrations, i + 1);
                             });
                         } else {
-                            this.stdout("\n" + n + " " + (n === 1 ? 'migration was' : 'migrations were') + " redone.\n", Jii.helpers.Console.FG_GREEN);
-                            this.stdout("\nMigration redone successfully.\n", Jii.helpers.Console.FG_GREEN);
+                            this.stdout("\n" + n + " " + (n === 1 ? 'migration was' : 'migrations were') + " redone.\n", Console.FG_GREEN);
+                            this.stdout("\nMigration redone successfully.\n", Console.FG_GREEN);
 
                             return Promise.resolve()
                         }
@@ -415,7 +417,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             return this._migrateToTime(time);
         }
 
-        throw new Jii.console.Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
+        throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
     },
 
     /**
@@ -440,7 +442,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
         if (matches) {
             version = 'm' + matches[1];
         } else {
-            throw new Jii.console.Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).");
+            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).");
         }
 
         // try mark up
@@ -459,7 +461,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                         }
 
                         return Promise.all(promises).then(() => {
-                            this.stdout("The migration history is set at " + originalVersion + ".\nNo actual migration was performed.\n", Jii.helpers.Console.FG_GREEN);
+                            this.stdout("The migration history is set at " + originalVersion + ".\nNo actual migration was performed.\n", Console.FG_GREEN);
                             return this.__static.EXIT_CODE_NORMAL;
                         });
                     });
@@ -473,7 +475,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                         var migration = migrations[key];
                         if (migration.indexOf(version + '_') === 0) {
                             if (i === 0) {
-                                this.stdout("Already at '" + originalVersion + "'. Nothing needs to be done.\n", Jii.helpers.Console.FG_YELLOW);
+                                this.stdout("Already at '" + originalVersion + "'. Nothing needs to be done.\n", Console.FG_YELLOW);
                             } else {
                                 return this.confirm("Set migration history at " + originalVersion + "?").then(bool => {
                                     if (!bool) {
@@ -486,7 +488,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                                     }
 
                                     return Promise.all(promises).then(() => {
-                                        this.stdout("The migration history is set at " + originalVersion + ".\nNo actual migration was performed.\n", Jii.helpers.Console.FG_GREEN);
+                                        this.stdout("The migration history is set at " + originalVersion + ".\nNo actual migration was performed.\n", Console.FG_GREEN);
                                         return this.__static.EXIT_CODE_NORMAL;
                                     });
                                 });
@@ -497,7 +499,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             });
         }).then(result => {
             if (result !== this.__static.EXIT_CODE_NORMAL) {
-                throw new Jii.console.Exception("Unable to find the version '" + originalVersion + "'.");
+                throw new Exception("Unable to find the version '" + originalVersion + "'.");
             }
         });
     },
@@ -525,21 +527,21 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
         } else {
             limit = parseInt(limit);
             if (limit < 1) {
-                throw new Jii.console.Exception('The limit must be greater than 0.');
+                throw new Exception('The limit must be greater than 0.');
             }
         }
 
         return this._getMigrationHistory(limit).then(migrations => {
             if (_isEmpty(migrations)) {
-                this.stdout("No migration has been done before.\n", Jii.helpers.Console.FG_YELLOW);
+                this.stdout("No migration has been done before.\n", Console.FG_YELLOW);
                 return this.__static.EXIT_CODE_NORMAL;
             }
 
             var n = _size(migrations);
             if (limit > 0) {
-                this.stdout("Showing the last " + n + " applied " + (n === 1 ? 'migration' : 'migrations') + ":\n", Jii.helpers.Console.FG_YELLOW);
+                this.stdout("Showing the last " + n + " applied " + (n === 1 ? 'migration' : 'migrations') + ":\n", Console.FG_YELLOW);
             } else {
-                this.stdout("Total " + n + " " + (n === 1 ? 'migration has' : 'migrations have') + " been applied before:\n", Jii.helpers.Console.FG_YELLOW);
+                this.stdout("Total " + n + " " + (n === 1 ? 'migration has' : 'migrations have') + " been applied before:\n", Console.FG_YELLOW);
             }
             _each(migrations, (time, version) => {
                 this.stdout("\t(" + (new Date(time * 1000).toString()) + ') ' + version + "\n");
@@ -571,22 +573,22 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
         } else {
             limit = parseInt(limit);
             if (limit < 1) {
-                throw new Jii.console.Exception('The limit must be greater than 0.');
+                throw new Exception('The limit must be greater than 0.');
             }
         }
 
         return this._getNewMigrations().then(migrations => {
             if (migrations.length === 0) {
-                this.stdout("No new migrations found. Your system is up-to-date.\n", Jii.helpers.Console.FG_GREEN);
+                this.stdout("No new migrations found. Your system is up-to-date.\n", Console.FG_GREEN);
                 return this.__static.EXIT_CODE_NORMAL;
             }
 
             var n = migrations.length;
             if (limit && n > limit) {
                 migrations = migrations.slice(0, limit);
-                this.stdout("Showing " + limit + " out of " + n + " new " + (n === 1 ? 'migration' : 'migrations') + ":\n", Jii.helpers.Console.FG_YELLOW);
+                this.stdout("Showing " + limit + " out of " + n + " new " + (n === 1 ? 'migration' : 'migrations') + ":\n", Console.FG_YELLOW);
             } else {
-                this.stdout("Found " + n + " new " + (n === 1 ? 'migration' : 'migrations') + ":\n", Jii.helpers.Console.FG_YELLOW);
+                this.stdout("Found " + n + " new " + (n === 1 ? 'migration' : 'migrations') + ":\n", Console.FG_YELLOW);
             }
 
             _each(migrations, migration => {
@@ -613,7 +615,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
     actionCreate(context) {
         var name = context.request.get(0);
         if (!name || !name.match(/^\w+/)) {
-            throw new Jii.console.Exception('The migration name should contain letters, digits and/or underscore characters only.');
+            throw new Exception('The migration name should contain letters, digits and/or underscore characters only.');
         }
 
         var generateClassTime = () => {
@@ -698,7 +700,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             }
 
             fs.writeFileSync(file, content);
-            this.stdout("New migration created successfully.\n", Jii.helpers.Console.FG_GREEN);
+            this.stdout("New migration created successfully.\n", Console.FG_GREEN);
         });
     },
 
@@ -712,7 +714,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             return Promise.resolve(true);
         }
 
-        this.stdout("*** applying " + className + "\n", Jii.helpers.Console.FG_YELLOW);
+        this.stdout("*** applying " + className + "\n", Console.FG_YELLOW);
         var start = (new Date()).getTime();
         var time;
 
@@ -723,13 +725,13 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             if (isSuccess !== false) {
                 return this._addMigrationHistory(className).then(() => {
                     time = (new Date()).getTime() - start;
-                    this.stdout("*** applied " + className + " (time: " + (time / 1000) + "s)\n\n", Jii.helpers.Console.FG_GREEN);
+                    this.stdout("*** applied " + className + " (time: " + (time / 1000) + "s)\n\n", Console.FG_GREEN);
 
                     return true;
                 });
             } else {
                 time = (new Date()).getTime() - start;
-                this.stdout("*** failed to apply " + className + " (time: " + (time / 1000) + "s)\n\n", Jii.helpers.Console.FG_RED);
+                this.stdout("*** failed to apply " + className + " (time: " + (time / 1000) + "s)\n\n", Console.FG_RED);
 
                 return false;
             }
@@ -746,7 +748,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             return Promise.resolve(true);
         }
 
-        this.stdout("*** reverting " + className + "\n", Jii.helpers.Console.FG_YELLOW);
+        this.stdout("*** reverting " + className + "\n", Console.FG_YELLOW);
         var start = (new Date()).getTime();
         var time;
 
@@ -757,13 +759,13 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             if (isSuccess !== false) {
                 return this._removeMigrationHistory(className).then(() => {
                     time = (new Date()).getTime() - start;
-                    this.stdout("*** reverted " + className + " (time: " + (time / 1000) + "s)\n\n", Jii.helpers.Console.FG_GREEN);
+                    this.stdout("*** reverted " + className + " (time: " + (time / 1000) + "s)\n\n", Console.FG_GREEN);
 
                     return true;
                 });
             } else {
                 time = (new Date()).getTime() - start;
-                this.stdout("*** failed to revert " + className + " (time: " + (time / 1000) + "s)\n\n", Jii.helpers.Console.FG_RED);
+                this.stdout("*** failed to revert " + className + " (time: " + (time / 1000) + "s)\n\n", Console.FG_RED);
 
                 return false;
             }
@@ -798,7 +800,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
             }
 
             if (count === 0) {
-                this.stdout("Nothing needs to be done.\n", Jii.helpers.Console.FG_GREEN);
+                this.stdout("Nothing needs to be done.\n", Console.FG_GREEN);
             } else {
                 return this._actionDownInternal(count);
             }
@@ -832,7 +834,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                     var migration = migrations[i];
                     if (migration.indexOf(version + '_') === 0) {
                         if (i === 0) {
-                            this.stdout("Already at '" + originalVersion + "'. Nothing needs to be done.\n", Jii.helpers.Console.FG_YELLOW);
+                            this.stdout("Already at '" + originalVersion + "'. Nothing needs to be done.\n", Console.FG_YELLOW);
                         } else {
                             return this._actionDownInternal(i);
                         }
@@ -841,7 +843,7 @@ module.exports = Jii.defineClass('Jii.sql.controllers.BaseMigrateController', /*
                     }
                 }
 
-                throw new Jii.console.Exception("Unable to find the version 'originalVersion'.");
+                throw new Exception("Unable to find the version 'originalVersion'.");
             });
         });
     },

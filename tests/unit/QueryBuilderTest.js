@@ -6,6 +6,12 @@
  * @ignore
  */
 var Jii = require('jii');
+var BaseSchema = require('../../server/BaseSchema');
+var ColumnSchema = require('../../server/ColumnSchema');
+var QueryBuilder = require('../../server/mysql/QueryBuilder');
+var ApplicationException = require('jii/exceptions/ApplicationException');
+var Expression = require('../../Expression');
+var Query = require('../../Query');
 var _each = require('lodash/each');
 var _has = require('lodash/has');
 var _isEmpty = require('lodash/isEmpty');
@@ -36,7 +42,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 		switch (this.driverName) {
 			case 'mysql':
-				queryBuilder = new Jii.sql.mysql.QueryBuilder();
+				queryBuilder = new QueryBuilder();
 				break;
 
 			/*case 'sqlite':
@@ -49,7 +55,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 				return new CubridQueryBuilder(this.getConnection(true, false));*/
 
 			default:
-				throw new Jii.exceptions.ApplicationException('Test is not implemented for ' + this.driverName);
+				throw new ApplicationException('Test is not implemented for ' + this.driverName);
 		}
 
 		return this.getConnection(true, false).then(function(db) {
@@ -64,63 +70,63 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 	 */
 	columnTypes: function () {
 		return [
-			[Jii.sql.BaseSchema.TYPE_PK, 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
-			[Jii.sql.BaseSchema.TYPE_PK + '(8)', 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
-			[Jii.sql.BaseSchema.TYPE_PK + ' CHECK (value > 5)', 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
-			[Jii.sql.BaseSchema.TYPE_PK + '(8) CHECK (value > 5)', 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
-			[Jii.sql.BaseSchema.TYPE_STRING, 'varchar(255)'],
-			[Jii.sql.BaseSchema.TYPE_STRING + '(32)', 'varchar(32)'],
-			[Jii.sql.BaseSchema.TYPE_STRING + ' CHECK (value LIKE "test%")', 'varchar(255) CHECK (value LIKE "test%")'],
-			[Jii.sql.BaseSchema.TYPE_STRING + '(32) CHECK (value LIKE "test%")', 'varchar(32) CHECK (value LIKE "test%")'],
-			[Jii.sql.BaseSchema.TYPE_STRING + ' NOT NULL', 'varchar(255) NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_TEXT, 'text'],
-			[Jii.sql.BaseSchema.TYPE_TEXT + '(255)', 'text'],
-			[Jii.sql.BaseSchema.TYPE_TEXT + ' CHECK (value LIKE "test%")', 'text CHECK (value LIKE "test%")'],
-			[Jii.sql.BaseSchema.TYPE_TEXT + '(255) CHECK (value LIKE "test%")', 'text CHECK (value LIKE "test%")'],
-			[Jii.sql.BaseSchema.TYPE_TEXT + ' NOT NULL', 'text NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_TEXT + '(255) NOT NULL', 'text NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_SMALLINT, 'smallint(6)'],
-			[Jii.sql.BaseSchema.TYPE_SMALLINT + '(8)', 'smallint(8)'],
-			[Jii.sql.BaseSchema.TYPE_INTEGER, 'int(11)'],
-			[Jii.sql.BaseSchema.TYPE_INTEGER + '(8)', 'int(8)'],
-			[Jii.sql.BaseSchema.TYPE_INTEGER + ' CHECK (value > 5)', 'int(11) CHECK (value > 5)'],
-			[Jii.sql.BaseSchema.TYPE_INTEGER + '(8) CHECK (value > 5)', 'int(8) CHECK (value > 5)'],
-			[Jii.sql.BaseSchema.TYPE_INTEGER + ' NOT NULL', 'int(11) NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_BIGINT, 'bigint(20)'],
-			[Jii.sql.BaseSchema.TYPE_BIGINT + '(8)', 'bigint(8)'],
-			[Jii.sql.BaseSchema.TYPE_BIGINT + ' CHECK (value > 5)', 'bigint(20) CHECK (value > 5)'],
-			[Jii.sql.BaseSchema.TYPE_BIGINT + '(8) CHECK (value > 5)', 'bigint(8) CHECK (value > 5)'],
-			[Jii.sql.BaseSchema.TYPE_BIGINT + ' NOT NULL', 'bigint(20) NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_FLOAT, 'float'],
-			[Jii.sql.BaseSchema.TYPE_FLOAT + '(16,5)', 'float'],
-			[Jii.sql.BaseSchema.TYPE_FLOAT + ' CHECK (value > 5.6)', 'float CHECK (value > 5.6)'],
-			[Jii.sql.BaseSchema.TYPE_FLOAT + '(16,5) CHECK (value > 5.6)', 'float CHECK (value > 5.6)'],
-			[Jii.sql.BaseSchema.TYPE_FLOAT + ' NOT NULL', 'float NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_DECIMAL, 'decimal(10,0)'],
-			[Jii.sql.BaseSchema.TYPE_DECIMAL + '(12,4)', 'decimal(12,4)'],
-			[Jii.sql.BaseSchema.TYPE_DECIMAL + ' CHECK (value > 5.6)', 'decimal(10,0) CHECK (value > 5.6)'],
-			[Jii.sql.BaseSchema.TYPE_DECIMAL + '(12,4) CHECK (value > 5.6)', 'decimal(12,4) CHECK (value > 5.6)'],
-			[Jii.sql.BaseSchema.TYPE_DECIMAL + ' NOT NULL', 'decimal(10,0) NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_DATETIME, 'datetime'],
-			[Jii.sql.BaseSchema.TYPE_DATETIME + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "datetime CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
-			[Jii.sql.BaseSchema.TYPE_DATETIME + ' NOT NULL', 'datetime NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_TIMESTAMP, 'timestamp'],
-			[Jii.sql.BaseSchema.TYPE_TIMESTAMP + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "timestamp CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
-			[Jii.sql.BaseSchema.TYPE_TIMESTAMP + ' NOT NULL', 'timestamp NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_TIME, 'time'],
-			[Jii.sql.BaseSchema.TYPE_TIME + " CHECK(value BETWEEN '12:00:00' AND '13:01:01')", "time CHECK(value BETWEEN '12:00:00' AND '13:01:01')"],
-			[Jii.sql.BaseSchema.TYPE_TIME + ' NOT NULL', 'time NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_DATE, 'date'],
-			[Jii.sql.BaseSchema.TYPE_DATE + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "date CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
-			[Jii.sql.BaseSchema.TYPE_DATE + ' NOT NULL', 'date NOT NULL'],
-			[Jii.sql.BaseSchema.TYPE_BINARY, 'blob'],
-			[Jii.sql.BaseSchema.TYPE_BOOLEAN, 'tinyint(1)'],
-			[Jii.sql.BaseSchema.TYPE_BOOLEAN + ' NOT NULL DEFAULT 1', 'tinyint(1) NOT NULL DEFAULT 1'],
-			[Jii.sql.BaseSchema.TYPE_MONEY, 'decimal(19,4)'],
-			[Jii.sql.BaseSchema.TYPE_MONEY + '(16,2)', 'decimal(16,2)'],
-			[Jii.sql.BaseSchema.TYPE_MONEY + ' CHECK (value > 0.0)', 'decimal(19,4) CHECK (value > 0.0)'],
-			[Jii.sql.BaseSchema.TYPE_MONEY + '(16,2) CHECK (value > 0.0)', 'decimal(16,2) CHECK (value > 0.0)'],
-			[Jii.sql.BaseSchema.TYPE_MONEY + ' NOT NULL', 'decimal(19,4) NOT NULL']
+			[BaseSchema.TYPE_PK, 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
+			[BaseSchema.TYPE_PK + '(8)', 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
+			[BaseSchema.TYPE_PK + ' CHECK (value > 5)', 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
+			[BaseSchema.TYPE_PK + '(8) CHECK (value > 5)', 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
+			[BaseSchema.TYPE_STRING, 'varchar(255)'],
+			[BaseSchema.TYPE_STRING + '(32)', 'varchar(32)'],
+			[BaseSchema.TYPE_STRING + ' CHECK (value LIKE "test%")', 'varchar(255) CHECK (value LIKE "test%")'],
+			[BaseSchema.TYPE_STRING + '(32) CHECK (value LIKE "test%")', 'varchar(32) CHECK (value LIKE "test%")'],
+			[BaseSchema.TYPE_STRING + ' NOT NULL', 'varchar(255) NOT NULL'],
+			[BaseSchema.TYPE_TEXT, 'text'],
+			[BaseSchema.TYPE_TEXT + '(255)', 'text'],
+			[BaseSchema.TYPE_TEXT + ' CHECK (value LIKE "test%")', 'text CHECK (value LIKE "test%")'],
+			[BaseSchema.TYPE_TEXT + '(255) CHECK (value LIKE "test%")', 'text CHECK (value LIKE "test%")'],
+			[BaseSchema.TYPE_TEXT + ' NOT NULL', 'text NOT NULL'],
+			[BaseSchema.TYPE_TEXT + '(255) NOT NULL', 'text NOT NULL'],
+			[BaseSchema.TYPE_SMALLINT, 'smallint(6)'],
+			[BaseSchema.TYPE_SMALLINT + '(8)', 'smallint(8)'],
+			[BaseSchema.TYPE_INTEGER, 'int(11)'],
+			[BaseSchema.TYPE_INTEGER + '(8)', 'int(8)'],
+			[BaseSchema.TYPE_INTEGER + ' CHECK (value > 5)', 'int(11) CHECK (value > 5)'],
+			[BaseSchema.TYPE_INTEGER + '(8) CHECK (value > 5)', 'int(8) CHECK (value > 5)'],
+			[BaseSchema.TYPE_INTEGER + ' NOT NULL', 'int(11) NOT NULL'],
+			[BaseSchema.TYPE_BIGINT, 'bigint(20)'],
+			[BaseSchema.TYPE_BIGINT + '(8)', 'bigint(8)'],
+			[BaseSchema.TYPE_BIGINT + ' CHECK (value > 5)', 'bigint(20) CHECK (value > 5)'],
+			[BaseSchema.TYPE_BIGINT + '(8) CHECK (value > 5)', 'bigint(8) CHECK (value > 5)'],
+			[BaseSchema.TYPE_BIGINT + ' NOT NULL', 'bigint(20) NOT NULL'],
+			[BaseSchema.TYPE_FLOAT, 'float'],
+			[BaseSchema.TYPE_FLOAT + '(16,5)', 'float'],
+			[BaseSchema.TYPE_FLOAT + ' CHECK (value > 5.6)', 'float CHECK (value > 5.6)'],
+			[BaseSchema.TYPE_FLOAT + '(16,5) CHECK (value > 5.6)', 'float CHECK (value > 5.6)'],
+			[BaseSchema.TYPE_FLOAT + ' NOT NULL', 'float NOT NULL'],
+			[BaseSchema.TYPE_DECIMAL, 'decimal(10,0)'],
+			[BaseSchema.TYPE_DECIMAL + '(12,4)', 'decimal(12,4)'],
+			[BaseSchema.TYPE_DECIMAL + ' CHECK (value > 5.6)', 'decimal(10,0) CHECK (value > 5.6)'],
+			[BaseSchema.TYPE_DECIMAL + '(12,4) CHECK (value > 5.6)', 'decimal(12,4) CHECK (value > 5.6)'],
+			[BaseSchema.TYPE_DECIMAL + ' NOT NULL', 'decimal(10,0) NOT NULL'],
+			[BaseSchema.TYPE_DATETIME, 'datetime'],
+			[BaseSchema.TYPE_DATETIME + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "datetime CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
+			[BaseSchema.TYPE_DATETIME + ' NOT NULL', 'datetime NOT NULL'],
+			[BaseSchema.TYPE_TIMESTAMP, 'timestamp'],
+			[BaseSchema.TYPE_TIMESTAMP + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "timestamp CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
+			[BaseSchema.TYPE_TIMESTAMP + ' NOT NULL', 'timestamp NOT NULL'],
+			[BaseSchema.TYPE_TIME, 'time'],
+			[BaseSchema.TYPE_TIME + " CHECK(value BETWEEN '12:00:00' AND '13:01:01')", "time CHECK(value BETWEEN '12:00:00' AND '13:01:01')"],
+			[BaseSchema.TYPE_TIME + ' NOT NULL', 'time NOT NULL'],
+			[BaseSchema.TYPE_DATE, 'date'],
+			[BaseSchema.TYPE_DATE + " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "date CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
+			[BaseSchema.TYPE_DATE + ' NOT NULL', 'date NOT NULL'],
+			[BaseSchema.TYPE_BINARY, 'blob'],
+			[BaseSchema.TYPE_BOOLEAN, 'tinyint(1)'],
+			[BaseSchema.TYPE_BOOLEAN + ' NOT NULL DEFAULT 1', 'tinyint(1) NOT NULL DEFAULT 1'],
+			[BaseSchema.TYPE_MONEY, 'decimal(19,4)'],
+			[BaseSchema.TYPE_MONEY + '(16,2)', 'decimal(16,2)'],
+			[BaseSchema.TYPE_MONEY + ' CHECK (value > 0.0)', 'decimal(19,4) CHECK (value > 0.0)'],
+			[BaseSchema.TYPE_MONEY + '(16,2) CHECK (value > 0.0)', 'decimal(16,2) CHECK (value > 0.0)'],
+			[BaseSchema.TYPE_MONEY + ' NOT NULL', 'decimal(19,4) NOT NULL']
 		];
 	},
 
@@ -178,7 +184,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			test.notStrictEqual(table, null);
 
 			_each(table.columns, function(column, name) {
-				test.strictEqual(column instanceof Jii.sql.ColumnSchema, true);
+				test.strictEqual(column instanceof ColumnSchema, true);
 				test.strictEqual(_has(columns, name), true);
 				test.strictEqual(column.name, name);
 			});
@@ -208,14 +214,14 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			[ ['or not like', 'name', ['heyho', 'abc']], '`name` NOT LIKE :qp0 OR `name` NOT LIKE :qp1', {':qp0': '%heyho%', ':qp1': '%abc%'} ],
 
 			// like with Expression
-			[ ['like', 'name', new Jii.sql.Expression('CONCAT("test", colname, "%")')], '`name` LIKE CONCAT("test", colname, "%")', [] ],
-			[ ['not like', 'name', new Jii.sql.Expression('CONCAT("test", colname, "%")')], '`name` NOT LIKE CONCAT("test", colname, "%")', [] ],
-			[ ['or like', 'name', new Jii.sql.Expression('CONCAT("test", colname, "%")')], '`name` LIKE CONCAT("test", colname, "%")', [] ],
-			[ ['or not like', 'name', new Jii.sql.Expression('CONCAT("test", colname, "%")')], '`name` NOT LIKE CONCAT("test", colname, "%")', [] ],
-			[ ['like', 'name', [new Jii.sql.Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` LIKE CONCAT("test", colname, "%") AND `name` LIKE :qp0', {':qp0': '%abc%'} ],
-			[ ['not like', 'name', [new Jii.sql.Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` NOT LIKE CONCAT("test", colname, "%") AND `name` NOT LIKE :qp0', {':qp0': '%abc%'} ],
-			[ ['or like', 'name', [new Jii.sql.Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` LIKE CONCAT("test", colname, "%") OR `name` LIKE :qp0', {':qp0': '%abc%'} ],
-			[ ['or not like', 'name', [new Jii.sql.Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` NOT LIKE CONCAT("test", colname, "%") OR `name` NOT LIKE :qp0', {':qp0': '%abc%'} ],
+			[ ['like', 'name', new Expression('CONCAT("test", colname, "%")')], '`name` LIKE CONCAT("test", colname, "%")', [] ],
+			[ ['not like', 'name', new Expression('CONCAT("test", colname, "%")')], '`name` NOT LIKE CONCAT("test", colname, "%")', [] ],
+			[ ['or like', 'name', new Expression('CONCAT("test", colname, "%")')], '`name` LIKE CONCAT("test", colname, "%")', [] ],
+			[ ['or not like', 'name', new Expression('CONCAT("test", colname, "%")')], '`name` NOT LIKE CONCAT("test", colname, "%")', [] ],
+			[ ['like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` LIKE CONCAT("test", colname, "%") AND `name` LIKE :qp0', {':qp0': '%abc%'} ],
+			[ ['not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` NOT LIKE CONCAT("test", colname, "%") AND `name` NOT LIKE :qp0', {':qp0': '%abc%'} ],
+			[ ['or like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` LIKE CONCAT("test", colname, "%") OR `name` LIKE :qp0', {':qp0': '%abc%'} ],
+			[ ['or not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` NOT LIKE CONCAT("test", colname, "%") OR `name` NOT LIKE :qp0', {':qp0': '%abc%'} ],
 
 			// not
 			[ ['not', 'name'], 'NOT (name)', [] ],
@@ -231,26 +237,26 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			// between
 			[ ['between', 'id', 1, 10], '`id` BETWEEN :qp0 AND :qp1', {':qp0': 1, ':qp1': 10} ],
 			[ ['not between', 'id', 1, 10], '`id` NOT BETWEEN :qp0 AND :qp1', {':qp0': 1, ':qp1': 10} ],
-			[ ['between', 'date', new Jii.sql.Expression('(NOW() - INTERVAL 1 MONTH)'), new Jii.sql.Expression('NOW()')], '`date` BETWEEN (NOW() - INTERVAL 1 MONTH) AND NOW()', [] ],
-			[ ['between', 'date', new Jii.sql.Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '`date` BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', {':qp0': 123} ],
-			[ ['not between', 'date', new Jii.sql.Expression('(NOW() - INTERVAL 1 MONTH)'), new Jii.sql.Expression('NOW()')], '`date` NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND NOW()', [] ],
-			[ ['not between', 'date', new Jii.sql.Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '`date` NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', {':qp0': 123} ],
+			[ ['between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), new Expression('NOW()')], '`date` BETWEEN (NOW() - INTERVAL 1 MONTH) AND NOW()', [] ],
+			[ ['between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '`date` BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', {':qp0': 123} ],
+			[ ['not between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), new Expression('NOW()')], '`date` NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND NOW()', [] ],
+			[ ['not between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '`date` NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', {':qp0': 123} ],
 
 			// in
 			[ ['in', 'id', [1, 2, 3]], '`id` IN (:qp0, :qp1, :qp2)', {':qp0': 1, ':qp1': 2, ':qp2': 3} ],
 			[ ['not in', 'id', [1, 2, 3]], '`id` NOT IN (:qp0, :qp1, :qp2)', {':qp0': 1, ':qp1': 2, ':qp2': 3} ],
-			[ ['in', 'id', (new Jii.sql.Query()).select('id').from('users').where({'active': 1})], '(`id`) IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
-			[ ['not in', 'id', (new Jii.sql.Query()).select('id').from('users').where({'active': 1})], '(`id`) NOT IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
+			[ ['in', 'id', (new Query()).select('id').from('users').where({'active': 1})], '(`id`) IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
+			[ ['not in', 'id', (new Query()).select('id').from('users').where({'active': 1})], '(`id`) NOT IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
 
 			// composite in
 			[ ['in', ['id', 'name'], [{'id': 1, 'name': 'foo'}, {'id': 2, 'name': 'bar'}]], '(`id`, `name`) IN ((:qp0, :qp1), (:qp2, :qp3))', {':qp0': 1, ':qp1': 'foo', ':qp2': 2, ':qp3': 'bar'} ],
 			[ ['not in', ['id', 'name'], [{'id': 1, 'name': 'foo'}, {'id': 2, 'name': 'bar'}]], '(`id`, `name`) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', {':qp0': 1, ':qp1': 'foo', ':qp2': 2, ':qp3': 'bar'} ],
-			[ ['in', ['id', 'name'], (new Jii.sql.Query()).select(['id', 'name']).from('users').where({'active': 1})], '(`id`, `name`) IN (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
-			[ ['not in', ['id', 'name'], (new Jii.sql.Query()).select(['id', 'name']).from('users').where({'active': 1})], '(`id`, `name`) NOT IN (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
+			[ ['in', ['id', 'name'], (new Query()).select(['id', 'name']).from('users').where({'active': 1})], '(`id`, `name`) IN (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
+			[ ['not in', ['id', 'name'], (new Query()).select(['id', 'name']).from('users').where({'active': 1})], '(`id`, `name`) NOT IN (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
 
 			// exists
-			[ ['exists', (new Jii.sql.Query()).select('id').from('users').where({'active': 1})], 'EXISTS (SELECT `id` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
-			[ ['not exists', (new Jii.sql.Query()).select('id').from('users').where({'active': 1})], 'NOT EXISTS (SELECT `id` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
+			[ ['exists', (new Query()).select('id').from('users').where({'active': 1})], 'EXISTS (SELECT `id` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
+			[ ['not exists', (new Query()).select('id').from('users').where({'active': 1})], 'NOT EXISTS (SELECT `id` FROM `users` WHERE `active`=:qp0)', {':qp0': 1} ],
 
 			// simple conditions
 			[ ['=', 'a', 'b'], '`a` = :qp0', {':qp0': 'b'} ],
@@ -260,12 +266,12 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 			[ ['<=', 'a', 'b'], '`a` <= :qp0', {':qp0': 'b'} ],
 			[ ['<>', 'a', 3], '`a` <> :qp0', {':qp0': 3} ],
 			[ ['!=', 'a', 'b'], '`a` != :qp0', {':qp0': 'b'} ],
-			[ ['>=', 'date', new Jii.sql.Expression('DATE_SUB(NOW(), INTERVAL 1 MONTH)')], '`date` >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', [] ],
-			[ ['>=', 'date', new Jii.sql.Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', {':month': 2})], '`date` >= DATE_SUB(NOW(), INTERVAL :month MONTH)', {':month': 2} ],
+			[ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL 1 MONTH)')], '`date` >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', [] ],
+			[ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', {':month': 2})], '`date` >= DATE_SUB(NOW(), INTERVAL :month MONTH)', {':month': 2} ],
 
 			// hash condition
 			[ {'a': 1, 'b': 2}, '(`a`=:qp0) AND (`b`=:qp1)', {':qp0': 1, ':qp1': 2} ],
-			[ {'a': new Jii.sql.Expression('CONCAT(col1, col2)'), 'b': 2}, '(`a`=CONCAT(col1, col2)) AND (`b`=:qp0)', {':qp0': 2} ]
+			[ {'a': new Expression('CONCAT(col1, col2)'), 'b': 2}, '(`a`=CONCAT(col1, col2)) AND (`b`=:qp0)', {':qp0': 2} ]
 		];
 
 		// adjust dbms specific escaping
@@ -285,7 +291,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 				var expected = item[1];
 				var expectedParams = item[2];
 
-				var query = (new Jii.sql.Query()).where(condition);
+				var query = (new Query()).where(condition);
 				queryBuilder.build(query).then(function(buildParams) {
 					var sql = buildParams[0];
 					var params = buildParams[1];
@@ -357,7 +363,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 				var expected = item[1];
 				var expectedParams = item[2];
 
-				var query = (new Jii.sql.Query()).filterWhere(condition);
+				var query = (new Query()).filterWhere(condition);
 				queryBuilder.build(query).then(function(buildParams) {
 					var sql = buildParams[0];
 					var params = buildParams[1];
@@ -427,11 +433,11 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 				var condition = item[0];
 				var expected = item[1];
 
-				var subQuery = new Jii.sql.Query();
+				var subQuery = new Query();
 				subQuery.select('1')
 					.from('Website w');
 
-				var query = new Jii.sql.Query();
+				var query = new Query();
 				query.select('id')
 					.from('TotalExample t')
 					.where([condition, subQuery]);
@@ -456,13 +462,13 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		);
 		var expectedQueryParams = {':some_value': "asd", ':merchant_id': 6};
 
-		var subQuery = new Jii.sql.Query();
+		var subQuery = new Query();
 		subQuery.select('1')
 			.from('Website w')
 			.where('w.id = t.website_id')
 			.andWhere('w.merchant_id = :merchant_id', {':merchant_id': 6});
 
-		var query = new Jii.sql.Query();
+		var query = new Query();
 		query.select('id')
 			.from('TotalExample t')
 			.where(['exists', subQuery])
@@ -488,13 +494,13 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		);
 		var expectedQueryParams = {':qp0': 'asd', ':qp1': 6, ':qp2': 210};
 
-		var subQuery = new Jii.sql.Query();
+		var subQuery = new Query();
 		subQuery.select('1')
 			.from('Website w')
 			.where('w.id = t.website_id')
 			.andWhere({'w.merchant_id': 6, 'w.user_id': '210'});
 
-		var query = new Jii.sql.Query();
+		var query = new Query();
 		query.select('id')
 			.from('TotalExample t')
 			.where(['exists', subQuery])
@@ -522,12 +528,12 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 		var expectedQuerySql = this._replaceQuotes(
 			"(SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2)) UNION ( SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 ) UNION ALL ( SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3 )"
 		);
-		var query = new Jii.sql.Query();
-		var secondQuery = new Jii.sql.Query();
+		var query = new Query();
+		var secondQuery = new Query();
 		secondQuery.select('id')
 			.from('TotalTotalExample t2')
 			.where('w > 5');
-		var thirdQuery = new Jii.sql.Query();
+		var thirdQuery = new Query();
 		thirdQuery.select('id')
 			.from('TotalTotalExample t3')
 			.where('w = 3');
@@ -554,11 +560,11 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 	testSelectSubquery: function (test)	{
 		var expected = this._replaceQuotes('SELECT *, (SELECT COUNT(*) FROM `operations` WHERE account_id = accounts.id) AS `operations_count` FROM `accounts`');
 
-		var subquery = (new Jii.sql.Query())
+		var subquery = (new Query())
 			.select('COUNT(*)')
 			.from('operations')
 			.where('account_id = accounts.id');
-		var query = (new Jii.sql.Query())
+		var query = (new Query())
 			.select('*')
 			.from('accounts')
 			.addSelect({operations_count: subquery});

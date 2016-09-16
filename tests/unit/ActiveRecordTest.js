@@ -6,6 +6,9 @@
  * @ignore
  */
 var Jii = require('jii');
+var Event = require('jii/base/Event');
+var ActiveRecord = require('../../ActiveRecord');
+var ActiveQuery = require('../../ActiveQuery');
 var _has = require('lodash/has');
 var _keys = require('lodash/keys');
 var _isObject = require('lodash/isObject');
@@ -83,7 +86,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 
 		var result = customerClass.find();
 
-		test.ok(result instanceof Jii.sql.ActiveQuery);
+		test.ok(result instanceof ActiveQuery);
 
 		// find one
 		result.one().then(function(customer) {
@@ -1209,10 +1212,10 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 	},
 
 	testUnlinkAllAndConditionSetNull: function (test) {
-		/** @typedef {Jii.base.ActiveRecord} customerClass */
+		/** @typedef {ActiveRecord} customerClass */
 		var customerClass = this.getCustomerClass();
 
-		/** @typedef {Jii.base.ActiveRecord} orderClass */
+		/** @typedef {ActiveRecord} orderClass */
 		var orderClass = this.getOrderWithNullFKClass();
 
 		var customer = null;
@@ -1603,12 +1606,12 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 		/** @typedef {Jii.sql.ActiveRecord} customerClass */
 		var customerClass = this.getCustomerClass();
 
-		/** @typedef {Jii.base.ActiveRecord} orderClass */
+		/** @typedef {ActiveRecord} orderClass */
 		var orderClass = this.getOrderClass();
 
 		var afterFindCalls = [];
-		Jii.base.Event.on(Jii.base.ActiveRecord.className(), Jii.base.ActiveRecord.EVENT_AFTER_FIND, function (event) {
-			/** @typedef {Jii.base.ActiveRecord} ar */
+		Event.on(ActiveRecord.className(), ActiveRecord.EVENT_AFTER_FIND, function (event) {
+			/** @typedef {ActiveRecord} ar */
 			var ar = event.sender;
 			afterFindCalls.push([ar.className(), ar.isNewRecord(), ar.getPrimaryKey(), ar.isRelationPopulated('orders')]);
 		});
@@ -1653,7 +1656,7 @@ var self = Jii.defineClass('tests.unit.ActiveRecordTest', {
 			], afterFindCalls);
 			afterFindCalls = [];
 
-			Jii.base.Event.off(Jii.base.ActiveRecord.className(), Jii.base.ActiveRecord.EVENT_AFTER_FIND);
+			Event.off(ActiveRecord.className(), ActiveRecord.EVENT_AFTER_FIND);
 
 			test.done();
 		});

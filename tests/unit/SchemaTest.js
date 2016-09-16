@@ -6,6 +6,8 @@
  * @ignore
  */
 var Jii = require('jii');
+var TableSchema = require('../../server/TableSchema');
+var Expression = require('../../Expression');
 var _each = require('lodash/each');
 var _has = require('lodash/has');
 var _keys = require('lodash/keys');
@@ -63,7 +65,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
 			test.equals(tableSchemas.length, tableNames.length);
 			_each(tableSchemas, function(table) {
-				test.strictEqual(table instanceof Jii.sql.TableSchema, true);
+				test.strictEqual(table instanceof TableSchema, true);
 			});
 
 			test.done();
@@ -275,7 +277,7 @@ var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 				size: null,
 				precision: null,
 				scale: null,
-				defaultValue: new Jii.sql.Expression('CURRENT_TIMESTAMP')
+				defaultValue: new Expression('CURRENT_TIMESTAMP')
 			},
 			'bit_col': {
 				type: 'smallint',

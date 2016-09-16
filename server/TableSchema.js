@@ -6,6 +6,7 @@
 'use strict';
 
 var Jii = require('jii');
+var InvalidParamException = require('jii/exceptions/InvalidParamException');
 var _isArray = require('lodash/isArray');
 var _each = require('lodash/each');
 var _has = require('lodash/has');
@@ -69,7 +70,7 @@ module.exports = Jii.defineClass('Jii.sql.TableSchema', /** @lends Jii.sql.Table
 			if (_has(this.columns, key)) {
 				this.columns[key].isPrimaryKey = true;
 			} else {
-				throw new Jii.exceptions.InvalidParamException('Primary key `key` cannot be found in table `' + key + '`.');
+				throw new InvalidParamException('Primary key `key` cannot be found in table `' + key + '`.');
 			}
 		});
 	}

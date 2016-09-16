@@ -6,6 +6,8 @@
 'use strict';
 
 var Jii = require('jii');
+var NotSupportedException = require('jii/exceptions/NotSupportedException');
+var InvalidParamException = require('jii/exceptions/InvalidParamException');
 var _isEmpty = require('lodash/isEmpty');
 var _isArray = require('lodash/isArray');
 var _isObject = require('lodash/isObject');
@@ -15,8 +17,10 @@ var _keys = require('lodash/keys');
 var _each = require('lodash/each');
 var _some = require('lodash/some');
 var _has = require('lodash/has');
-var _size = require('lodash/size');
 var Object = require('jii/base/Object');
+var Query = require('./Query');
+var Expression = require('./Expression');
+var Model = require('jii-model/base/Model');
 
 /**
  * @class Jii.sql.FilterBuilder
@@ -43,7 +47,8 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 
     prepare(query) {
         // @todo prepare, tmp
-        if (query instanceof Jii.sql.ActiveQuery) {
+		var ActiveQuery = require('./ActiveQuery');
+        if (query instanceof ActiveQuery) {
             query._filterByModels([query.primaryModel]);
         }
     },
@@ -58,7 +63,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 
     createFilter(query) {
         return row => {
-            if (row instanceof Jii.base.Model) {
+            if (row instanceof Model) {
                 row = row.getAttributes();
             }
             return this.filter(row, query);
@@ -115,7 +120,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 
     filterHashCondition(row, condition) {
 		return _every(condition, (value, column) => {
-			if (_isArray(value) || value instanceof Jii.sql.Query) {
+			if (_isArray(value) || value instanceof Query) {
 				// IN condition
                 return this.filterInCondition(row, 'IN', [column, value]);
 			}
@@ -126,9 +131,9 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
             }
 
             // Null
-            if (value instanceof Jii.sql.Expression) {
+            if (value instanceof Expression) {
                 // @todo implement
-                throw new Jii.exceptions.NotSupportedException();
+                throw new NotSupportedException();
             }
 
             return row[column] == value;
@@ -147,7 +152,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
             }
 
             // @todo implement.. string?
-            throw new Jii.exceptions.NotSupportedException();
+            throw new NotSupportedException();
         });
 	},
 
@@ -158,7 +163,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
                 attributes = attributes.concat(this.attributesCondition(operand));
             } else {
                 // @todo implement.. string?
-                throw new Jii.exceptions.NotSupportedException();
+                throw new NotSupportedException();
             }
         });
         return attributes;
@@ -166,7 +171,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 
     filterNotCondition(row, operator, operands) {
 		if (operands.length !== 1) {
-			throw new Jii.exceptions.InvalidParamException("Operator `" + operator + "` requires exactly one operand.");
+			throw new InvalidParamException("Operator `" + operator + "` requires exactly one operand.");
 		}
 
         var bool = true;
@@ -183,7 +188,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 
     filterBetweenCondition(row, operator, operands) {
 		if (operands.length !== 3) {
-			throw new Jii.exceptions.InvalidParamException('Operator `' + operator + '` requires three operands.');
+			throw new InvalidParamException('Operator `' + operator + '` requires three operands.');
 		}
 
         var column = operands[0];
@@ -199,7 +204,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 
     filterInCondition(row, operator, operands) {
 		if (operands.length !== 2) {
-			throw new Jii.exceptions.InvalidParamException('Operator `' + operator + '` requires two operands.');
+			throw new InvalidParamException('Operator `' + operator + '` requires two operands.');
 		}
 
 		var column = operands[0];
@@ -209,9 +214,9 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 			return false;
 		}
 
-		if (values instanceof Jii.sql.Query) {
+		if (values instanceof Query) {
 			// sub-query
-			throw new Jii.exceptions.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
 		if (!_isArray(values)) {
@@ -220,7 +225,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 
 		if (_isArray(column) && column.length > 1) {
             // @todo
-            throw new Jii.exceptions.NotSupportedException();
+            throw new NotSupportedException();
 		}
 
 		if (_isArray(column)) {
@@ -235,9 +240,9 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 			if (value === null) {
 				return row[column] === null;
 			}
-            if (value instanceof Jii.sql.Expression) {
+            if (value instanceof Expression) {
                 // @todo
-                throw new Jii.exceptions.NotSupportedException();
+                throw new NotSupportedException();
 			}
 
             return row[column] == value;
@@ -273,7 +278,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 	 */
     filterLikeCondition(operator, operands, params) {
 		if (operands.length !== 2) {
-			throw new Jii.exceptions.InvalidParamException('Operator `' + operator + '` requires two operands.');
+			throw new InvalidParamException('Operator `' + operator + '` requires two operands.');
 		}
 
 		var escape = operands[2] || {'%': '\\%', '_': '\\_', '\\': '\\\\'};
@@ -281,12 +286,12 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 
 		var matches = /^(AND |OR |)((NOT |)I?LIKE)/.exec(operator);
 		if (matches === null) {
-			throw new Jii.exceptions.InvalidParamException('Invalid operator `' + operator + '`.');
+			throw new InvalidParamException('Invalid operator `' + operator + '`.');
 		}
 
 
         // @todo http://stackoverflow.com/questions/1314045/emulating-sql-like-in-javascript
-        throw new Jii.exceptions.NotSupportedException();
+        throw new NotSupportedException();
 
 
 		/*var andor = ' ' + (matches[1] || 'AND ');
@@ -310,7 +315,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 		var parts = [];
 		_each(values, value => {
 			var phName = null;
-			if (value instanceof Jii.sql.Expression) {
+			if (value instanceof Expression) {
 				_each(value.params, (n, v) => {
 					params[n] = v;
 				});
@@ -342,7 +347,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 	 * @throws {Jii.exceptions.InvalidParamException} if the operand is not a [[Query]] object.
 	 */
     filterExistsCondition(operator, operands, params) {
-        throw new Jii.exceptions.NotSupportedException();
+        throw new NotSupportedException();
 	},
 
 	/**
@@ -355,20 +360,20 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 	 */
     filterSimpleCondition(operator, operands, params) {
 		if (operands.length !== 2) {
-			throw new Jii.exceptions.InvalidParamException("Operator `" + operator + "` requires two operands.");
+			throw new InvalidParamException("Operator `" + operator + "` requires two operands.");
 		}
 
 		var column = operands[0];
 		var value = operands[1];
 
         // @todo
-        throw new Jii.exceptions.NotSupportedException();
+        throw new NotSupportedException();
 /*
 		var condition = null;
 
 		if (value === null) {
 			condition = column + ' ' + operator + ' NULL';
-		} else if (value instanceof Jii.sql.Expression) {
+		} else if (value instanceof Expression) {
 			_each(value.params, (v, n) => {
 				params[n] = v;
 			});

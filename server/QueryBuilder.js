@@ -6,6 +6,11 @@
 'use strict';
 
 var Jii = require('jii');
+var NotSupportedException = require('jii/exceptions/NotSupportedException');
+var InvalidConfigException = require('jii/exceptions/InvalidConfigException');
+var InvalidParamException = require('jii/exceptions/InvalidParamException');
+var Expression = require('../Expression');
+var Query = require('../Query');
 var _isArray = require('lodash/isArray');
 var _isString = require('lodash/isString');
 var _isBoolean = require('lodash/isBoolean');
@@ -26,14 +31,14 @@ var _trimStart = require('lodash/trimStart');
 var Object = require('jii/base/Object');
 
 /**
- * @class Jii.sql.QueryBuilder
+ * @class QueryBuilder
  * @extends Jii.base.Object
  */
-module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.QueryBuilder.prototype */{
+module.exports = Jii.defineClass('QueryBuilder', /** @lends QueryBuilder.prototype */{
 
 	__extends: Object,
 
-	__static: /** @lends Jii.sql.QueryBuilder */{
+	__static: /** @lends QueryBuilder */{
 
 		/**
 		 * The prefix for automatically generated query binding parameters.
@@ -94,7 +99,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 
 	/**
 	 * Generates a SELECT SQL statement from a [[Query]] object.
-	 * @param {Jii.sql.Query} query the [[Query]] object from which the SQL statement will be generated.
+	 * @param {Query} query the [[Query]] object from which the SQL statement will be generated.
 	 * @param {object} [params] the parameters to be bound to the generated SQL statement. These parameters will
 	 * be included in the result with the additional parameters generated during the query building process.
 	 * @return {[]} the generated SQL statement (the first array element) and the corresponding
@@ -161,7 +166,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 		_each(columns, (value, name) => {
 			names.push(this.db.quoteColumnName(name));
 
-			if (value instanceof Jii.sql.Expression) {
+			if (value instanceof Expression) {
 				placeholders.push(value.expression);
 				params = _extend(params, value.params);
 			} else {
@@ -257,7 +262,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 		var lines = [];
 
 		_each(columns, (value, name) => {
-			if (value instanceof Jii.sql.Expression) {
+			if (value instanceof Expression) {
 				lines.push(this.db.quoteColumnName(name) + '=' + value.expression);
 				_each(value.params, (v, n) => {
 					params[n] = v;
@@ -538,7 +543,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 	 */
 	resetSequence(table, value) {
 		value = value || null;
-		throw new Jii.exceptions.NotSupportedException(this.db.getDriverName() + ' does not support resetting sequence.');
+		throw new NotSupportedException(this.db.getDriverName() + ' does not support resetting sequence.');
 	},
 
 	/**
@@ -554,7 +559,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 		schema = schema || '';
 		table = table || '';
 
-		throw new Jii.exceptions.NotSupportedException(this.db.getDriverName() + ' does not support enabling/disabling integrity check.');
+		throw new NotSupportedException(this.db.getDriverName() + ' does not support enabling/disabling integrity check.');
 	},
 
 	/**
@@ -637,10 +642,10 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 		var normalizeColumns = [];
 		var promises = [];
 		_each(columns, (column, i) => {
-			if (column instanceof Jii.sql.Expression) {
+			if (column instanceof Expression) {
 				normalizeColumns.push(column.expression);
 				params = _extend(params, column.params);
-			} else if (column instanceof Jii.sql.Query) {
+			} else if (column instanceof Query) {
 				var promise = this.build(column, params).then(buildParams => {
 					var sql = buildParams[0];
 
@@ -701,7 +706,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 
 		_each(joins, (join, i) => {
 			if (!_isArray(join) || join.length < 1) {
-				throw new Jii.exceptions.InvalidConfigException('A join clause must be specified as an array of join type, join table, and optionally join condition.');
+				throw new InvalidConfigException('A join clause must be specified as an array of join type, join table, and optionally join condition.');
 			}
 
 			// 0:join type, 1:join table, 2:on-condition (optional)
@@ -744,7 +749,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 		var promises = [];
 
 		_each(tables, (table, i) => {
-			if (table instanceof Jii.sql.Query) {
+			if (table instanceof Query) {
 
 				var promise = this.build(table, params).then(buildResult => {
 					var sql = buildResult[0];
@@ -814,7 +819,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 
 		var orders = [];
 		_each(columns, (direction, name) => {
-			if (direction instanceof Jii.sql.Expression) {
+			if (direction instanceof Expression) {
 				orders.push(direction.expression);
 			} else {
 				orders.push(this.db.quoteColumnName(name) + (direction.toLowerCase() === 'desc' ? ' DESC' : ''));
@@ -876,7 +881,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 		var promises = [];
 
 		_each(unions, (union, i) => {
-			if (union.query instanceof Jii.sql.Query) {
+			if (union.query instanceof Query) {
 				var promise = this.build(union.query, params).then(buildResult => {
 					unions[i].query = buildResult[0];
 					params = _extend(params, buildResult[1]);
@@ -910,7 +915,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 		}
 
 		columns = _map(columns, column => {
-			if (column instanceof Jii.sql.Expression) {
+			if (column instanceof Expression) {
 				return column.expression;
 			} else if (column.indexOf('(') === -1) {
 				return this.db.quoteColumnName(column);
@@ -963,7 +968,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 
 		_each(condition, (value, column) => {
 
-			if (_isArray(value) || value instanceof Jii.sql.Query) {
+			if (_isArray(value) || value instanceof Query) {
 				// IN condition
 				var promise = this.buildInCondition('IN', [column, value], params).then(condition => {
 					parts.push(condition);
@@ -975,7 +980,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 				}
 				if (value === null) {
 					parts.push(column + ' IS NULL');
-				} else if (value instanceof Jii.sql.Expression) {
+				} else if (value instanceof Expression) {
 					parts.push(column + '=' + value.expression);
 					params = _extend(params, value.params);
 				} else {
@@ -1029,7 +1034,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 	 */
 	buildNotCondition(operator, operands, params) {
 		if (operands.length !== 1) {
-			throw new Jii.exceptions.InvalidParamException("Operator 'operator' requires exactly one operand.");
+			throw new InvalidParamException("Operator 'operator' requires exactly one operand.");
 		}
 
 		return Promise.resolve().then(() => {
@@ -1055,7 +1060,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 	 */
 	buildBetweenCondition(operator, operands, params) {
 		if (operands.length !== 3) {
-			throw new Jii.exceptions.InvalidParamException('Operator `' + operator + '` requires three operands.');
+			throw new InvalidParamException('Operator `' + operator + '` requires three operands.');
 		}
 
 		var column = operands[0];
@@ -1069,7 +1074,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 		var phName1 = null;
 		var phName2 = null;
 
-		if (value1 instanceof Jii.sql.Expression) {
+		if (value1 instanceof Expression) {
 			_each(value1.params, (n, v) => {
 				params[n] = v;
 			});
@@ -1078,7 +1083,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 			phName1 = this.__static.PARAM_PREFIX + _size(params);
 			params[phName1] = value1;
 		}
-		if (value2 instanceof Jii.sql.Expression) {
+		if (value2 instanceof Expression) {
 			_each(value2.params, (n, v) => {
 				params[n] = v;
 			});
@@ -1105,7 +1110,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 	 */
 	buildInCondition(operator, operands, params) {
 		if (operands.length !== 2) {
-			throw new Jii.exceptions.InvalidParamException('Operator `' + operator + '` requires two operands.');
+			throw new InvalidParamException('Operator `' + operator + '` requires two operands.');
 		}
 
 		var column = operands[0];
@@ -1115,7 +1120,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 			return Promise.resolve(operator === 'IN' ? '0=1' : '');
 		}
 
-		if (values instanceof Jii.sql.Query) {
+		if (values instanceof Query) {
 			// sub-query
 			return this.build(values, params).then(buildResult => {
 				var sql = buildResult[0];
@@ -1154,7 +1159,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 
 			if (value === null) {
 				inValues.push('NULL');
-			} else if (value instanceof Jii.sql.Expression) {
+			} else if (value instanceof Expression) {
 				inValues.push(value.expression);
 				params = _extend(params, value.params);
 			} else {
@@ -1230,7 +1235,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 	 */
 	buildLikeCondition(operator, operands, params) {
 		if (operands.length !== 2) {
-			throw new Jii.exceptions.InvalidParamException('Operator `' + operator + '` requires two operands.');
+			throw new InvalidParamException('Operator `' + operator + '` requires two operands.');
 		}
 
 		var escape = operands[2] || {'%': '\\%', '_': '\\_', '\\': '\\\\'};
@@ -1238,7 +1243,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 
 		var matches = /^(AND |OR |)((NOT |)I?LIKE)/.exec(operator);
 		if (matches === null) {
-			throw new Jii.exceptions.InvalidParamException('Invalid operator `' + operator + '`.');
+			throw new InvalidParamException('Invalid operator `' + operator + '`.');
 		}
 
 		var andor = ' ' + (matches[1] || 'AND ');
@@ -1262,7 +1267,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 		var parts = [];
 		_each(values, value => {
 			var phName = null;
-			if (value instanceof Jii.sql.Expression) {
+			if (value instanceof Expression) {
 				_each(value.params, (n, v) => {
 					params[n] = v;
 				});
@@ -1294,7 +1299,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 	 * @throws {Jii.exceptions.InvalidParamException} if the operand is not a [[Query]] object.
 	 */
 	buildExistsCondition(operator, operands, params) {
-		if (operands[0] instanceof Jii.sql.Query) {
+		if (operands[0] instanceof Query) {
 			return this.build(operands[0], params).then(buildParams => {
 				var sql = buildParams[0];
 				params = _extend(params, buildParams[1]);
@@ -1303,7 +1308,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 			});
 		}
 
-		throw new Jii.exceptions.InvalidParamException('Subquery for EXISTS operator must be a Query object.');
+		throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
 	},
 
 	/**
@@ -1316,7 +1321,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 	 */
 	buildSimpleCondition(operator, operands, params) {
 		if (operands.length !== 2) {
-			throw new Jii.exceptions.InvalidParamException("Operator `" + operator + "` requires two operands.");
+			throw new InvalidParamException("Operator `" + operator + "` requires two operands.");
 		}
 
 		var column = operands[0];
@@ -1330,7 +1335,7 @@ module.exports = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.Quer
 
 		if (value === null) {
 			condition = column + ' ' + operator + ' NULL';
-		} else if (value instanceof Jii.sql.Expression) {
+		} else if (value instanceof Expression) {
 			_each(value.params, (v, n) => {
 				params[n] = v;
 			});

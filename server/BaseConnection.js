@@ -2,6 +2,8 @@
 'use strict';
 
 var Jii = require('jii');
+var ApplicationException = require('jii/exceptions/ApplicationException');
+var Command = require('./Command');
 var _isString = require('lodash/isString');
 var _each = require('lodash/each');
 var Component = require('jii/base/Component');
@@ -222,11 +224,11 @@ module.exports = Jii.defineClass('Jii.sql.BaseConnection', /** @lends Jii.sql.Ba
 		params = params || [];
 
 		if (!this._isOpen) {
-			throw new Jii.exceptions.ApplicationException('Database connection is not opened. Use open() method before send queries.');
+			throw new ApplicationException('Database connection is not opened. Use open() method before send queries.');
 		}
 
 		this.open();
-		var command = new Jii.sql.Command({
+		var command = new Command({
 			db: this,
 			sql: sql
 		});

@@ -6,6 +6,10 @@
 'use strict';
 
 var Jii = require('jii');
+var Query = require('./Query');
+var ActiveRecord = require('./ActiveRecord');
+var Model = require('jii-model/base/Model');
+var InvalidConfigException = require('jii/exceptions/InvalidConfigException');
 var _isEmpty = require('lodash/isEmpty');
 var _isString = require('lodash/isString');
 var _isArray = require('lodash/isArray');
@@ -23,7 +27,6 @@ var _extend = require('lodash/extend');
 var _keys = require('lodash/keys');
 var _size = require('lodash/size');
 var _uniq = require('lodash/uniq');
-var Query = require('./Query');
 
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
@@ -103,13 +106,13 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 	multiple: null,
 
 	/**
-	 * @type {Jii.sql.ActiveRecord} the primary model of a relational query.
+	 * @type {ActiveRecord} the primary model of a relational query.
 	 * This is used only in lazy loading with dynamic query options.
 	 */
 	primaryModel: null,
 
 	/**
-	 * @type {Jii.sql.ActiveRecord} ActiveRecord class.
+	 * @type {ActiveRecord} ActiveRecord class.
 	 */
 	modelClass: null,
 
@@ -175,7 +178,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 
 	/**
 	 * Constructor.
-	 * @param {Jii.sql.ActiveRecord} modelClass the model class associated with this query
+	 * @param {ActiveRecord} modelClass the model class associated with this query
 	 * @param {[]} config configurations to be applied to the newly created query object
 	 */
 	constructor(modelClass, config) {
@@ -238,7 +241,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 		}
 
 		if (_isEmpty(this._from)) {
-			/** @typedef {Jii.sql.ActiveRecord} modelClass */
+			/** @typedef {ActiveRecord} modelClass */
 			var modelClass = this.modelClass;
 			var tableName = modelClass.tableName();
 			this._from = [tableName];
@@ -269,7 +272,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 		return Promise.resolve().then(() => {
 			if (this.primaryModel === null) {
 				// eager loading
-				return Jii.sql.Query.createFromQuery(this);
+				return Query.createFromQuery(this);
 			}
 
 			// lazy loading of a relation
@@ -305,7 +308,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 					this._filterByModels(model === null ? [] : [model]);
 				});
 			}).then(() => {
-				var query = Jii.sql.Query.createFromQuery(this);
+				var query = Query.createFromQuery(this);
 				this._where = where;
 				return query;
 			});
@@ -357,7 +360,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 		var hash = {};
 		var newModels = {};
 
-		/** @typedef {Jii.sql.ActiveRecord} _class */
+		/** @typedef {ActiveRecord} _class */
 		var _class = this.modelClass;
 		var pks = _class.primaryKey();
 
@@ -393,7 +396,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 	 * Executes query and returns a single row of result.
 	 * @param {Jii.sql.Connection} [db] the DB connection used to create the DB command.
 	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @returns {Jii.sql.ActiveRecord|[]|null} a single row of query result. Depending on the setting of [[asArray]],
+	 * @returns {ActiveRecord|[]|null} a single row of query result. Depending on the setting of [[asArray]],
 	 * the query result may be either an array or an ActiveRecord object. Null will be returned
 	 * if the query results in nothing.
 	 */
@@ -420,7 +423,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 	createCommand(db) {
 		db = db || null;
 
-		/** @typedef {Jii.sql.ActiveRecord} modelClass */
+		/** @typedef {ActiveRecord} modelClass */
 		var modelClass = this.modelClass;
 		if (db === null) {
 			db = modelClass.getDb();
@@ -559,7 +562,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 
 	/**
 	 * Modifies the current query by adding join fragments based on the given relations.
-	 * @param {Jii.sql.ActiveRecord} model the primary model
+	 * @param {ActiveRecord} model the primary model
 	 * @param {[]} _with the relations to be joined
 	 * @param {string|[]} joinType the join type
 	 */
@@ -636,7 +639,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 		var tableName = '';
 
 		if (_isEmpty(query.getFrom())) {
-			/** @typedef Jii.sql.ActiveRecord modelClass */
+			/** @typedef ActiveRecord modelClass */
 			var modelClass = query.modelClass;
 			tableName = modelClass.tableName();
 		} else {
@@ -676,7 +679,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 		var via = child.getVia();
 		child.setVia(null);
 
-		if (via instanceof Jii.sql.ActiveQuery) {
+		if (via instanceof this.__static) {
 			// via table
 			this._joinWithRelation(parent, via, joinType);
 			this._joinWithRelation(via, child, joinType);
@@ -839,7 +842,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 	viaTable(tableName, link, callable) {
 		callable = callable || null;
 
-		var relation = new Jii.sql.ActiveQuery(this.primaryModel, {
+		var relation = new this.__static(this.primaryModel, {
 			from: [tableName],
 			link: link,
 			multiple: true,
@@ -956,14 +959,14 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 
 			if (this.multiple) {
 				_each(related, (relatedModel, i) => {
-					if (relatedModel instanceof Jii.sql.ActiveRecord) {
+					if (relatedModel instanceof ActiveRecord) {
 						relatedModel.populateRelation(this._inverseOf, inverseRelation.multiple ? [model] : model);
 					} else {
 						related[i][this._inverseOf] = inverseRelation.multiple ? [model] : model;
 					}
 				});
 			} else {
-				if (related instanceof Jii.sql.ActiveRecord) {
+				if (related instanceof ActiveRecord) {
 					related.populateRelation(this._inverseOf, inverseRelation.multiple ? [model] : model);
 				} else {
 					related[this._inverseOf] = inverseRelation.multiple ? [model] : model;
@@ -983,7 +986,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 	 */
 	populateRelation(name, primaryModels) {
 		if (!_isObject(this.link)) {
-			throw new Jii.exceptions.InvalidConfigException('Invalid link: it must be an array of key-value pairs.');
+			throw new InvalidConfigException('Invalid link: it must be an array of key-value pairs.');
 		}
 
 		/** @typedef {Jii.sql.ActiveQuery} viaQuery */
@@ -1020,7 +1023,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 				return this.one().then(model => {
 
 					_each(primaryModels, (primaryModel, i) => {
-						if (primaryModel instanceof Jii.sql.ActiveRecord) {
+						if (primaryModel instanceof ActiveRecord) {
 							primaryModel.populateRelation(name, model);
 						} else {
 							primaryModels[i][name] = model;
@@ -1053,7 +1056,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 				_each(primaryModels, (primaryModel, i) => {
 					var value = null;
 					var k = _values(link)[0];
-					var keys = primaryModel instanceof Jii.base.Model ? primaryModel.get(k) : primaryModel[k];
+					var keys = primaryModel instanceof Model ? primaryModel.get(k) : primaryModel[k];
 
 					if (this.multiple && _isArray(keys) && link.length == 1) {
 
@@ -1078,7 +1081,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 						value = buckets[key] || (this.multiple ? [] : null);
 					}
 
-					if (primaryModel instanceof Jii.sql.ActiveRecord) {
+					if (primaryModel instanceof ActiveRecord) {
 						primaryModel.populateRelation(name, value);
 					} else {
 						primaryModels[i][name] = value;
@@ -1095,8 +1098,8 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 	},
 
 	/**
-	 * @param {Jii.sql.ActiveRecord[]} primaryModels primary models
-	 * @param {Jii.sql.ActiveRecord[]} models models
+	 * @param {ActiveRecord[]} primaryModels primary models
+	 * @param {ActiveRecord[]} models models
 	 * @param {string} primaryName the primary relation name
 	 * @param {string} name the relation name
 	 */
@@ -1107,13 +1110,13 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 
 		var model = models[0];
 		/** @typedef {Jii.sql.ActiveQuery} relation */
-		var relation = model instanceof Jii.sql.ActiveRecord ?
+		var relation = model instanceof ActiveRecord ?
 			model.getRelation(name) :
 			(new this.modelClass()).getRelation(name);
 
 		if (relation.multiple) {
 			var buckets = this._buildBuckets(primaryModels, relation.link, null, null, false);
-			if (model instanceof Jii.sql.ActiveRecord) {
+			if (model instanceof ActiveRecord) {
 				_each(models, model => {
 					var key = this._getModelKey(model, relation.link);
 					model.populateRelation(name, buckets[key] || []);
@@ -1134,9 +1137,9 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 		} else {
 			if (this.multiple) {
 				_each(primaryModels, (primaryModel, i) => {
-					var model = primaryModel instanceof Jii.base.Model ? primaryModel.get(primaryName) : primaryModel[primaryName];
+					var model = primaryModel instanceof Model ? primaryModel.get(primaryName) : primaryModel[primaryName];
 					_each(model, (m, j) => {
-						if (m instanceof Jii.sql.ActiveRecord) {
+						if (m instanceof ActiveRecord) {
 							m.populateRelation(name, primaryModel);
 						} else {
 							model[j][name] = primaryModel;
@@ -1145,7 +1148,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 				});
 			} else {
 				_each(primaryModels, (primaryModel, i) => {
-					if (primaryModels[i][primaryName] instanceof Jii.sql.ActiveRecord) {
+					if (primaryModels[i][primaryName] instanceof ActiveRecord) {
 						primaryModels[i][primaryName].populateRelation(name, primaryModel);
 					} else if (!_isEmpty(primaryModels[i][primaryName])) {
 						primaryModels[i][primaryName][name] = primaryModel;
@@ -1240,7 +1243,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 			var alias = null;
 
 			if (_isEmpty(this._from)) {
-				/** @typedef {Jii.sql.ActiveRecord} modelClass */
+				/** @typedef {ActiveRecord} modelClass */
 				var modelClass = this.modelClass;
 				alias = modelClass.tableName();
 			} else {
@@ -1279,7 +1282,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 			// single key
 			var attribute = _values(this.link)[0];
 			_each(models, model => {
-				var value = model instanceof Jii.base.Model ? model.get(attribute) : model[attribute];
+				var value = model instanceof Model ? model.get(attribute) : model[attribute];
 				if (value !== null) {
 					if (_isArray(value)) {
 						values = values.concat(value);
@@ -1293,7 +1296,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 			_each(models, model => {
 				var v = {};
 				_each(this.link, (link, attribute) => {
-					v[attribute] = model instanceof Jii.base.Model ? model.get(attribute) : model[attribute];
+					v[attribute] = model instanceof Model ? model.get(attribute) : model[attribute];
 				});
 				values.push(v);
 			});
@@ -1303,7 +1306,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 	},
 
 	/**
-	 * @param {Jii.sql.ActiveRecord|[]} model
+	 * @param {ActiveRecord|[]} model
 	 * @param {[]} attributes
 	 * @returns {string}
 	 */
@@ -1311,13 +1314,13 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 		if (_size(attributes) > 1) {
 			var key = [];
 			_each(attributes, attribute => {
-				key.push(model instanceof Jii.base.Model ? model.get(attribute) : model[attribute]);
+				key.push(model instanceof Model ? model.get(attribute) : model[attribute]);
 			});
 
 			return JSON.stringify(key);
 		} else {
 			var attribute = _values(attributes)[0];
-			var key = model instanceof Jii.base.Model ? model.get(attribute) : model[attribute];
+			var key = model instanceof Model ? model.get(attribute) : model[attribute];
 
 			return _isNumber(key) || _isString(key) ? key : JSON.stringify(key);
 		}
@@ -1333,9 +1336,9 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 		}
 
 		this._filterByModels(primaryModels);
-		/** @typedef {Jii.sql.ActiveRecord} primaryModel */
+		/** @typedef {ActiveRecord} primaryModel */
 		var primaryModel = primaryModels[0];
-		if (!(primaryModel instanceof Jii.sql.ActiveRecord)) {
+		if (!(primaryModel instanceof ActiveRecord)) {
 			// when primaryModels are array of arrays (asArray case)
 			primaryModel = new this.modelClass();
 		}
@@ -1491,13 +1494,13 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 				models[key] = row;
 			});
 		} else {
-			/** @typedef {Jii.sql.ActiveRecord} _class */
+			/** @typedef {ActiveRecord} _class */
 			var _class = this.modelClass;
 			if (this._indexBy === null) {
 
 				models = [];
 				_each(rows, row => {
-					/** @typedef {Jii.sql.ActiveRecord} model */
+					/** @typedef {ActiveRecord} model */
 					var model = _class.instantiate(row);
 
 					_class.populateRecord(model, row);
@@ -1507,7 +1510,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 
 				models = {};
 				_each(rows, row => {
-					/** @typedef {Jii.sql.ActiveRecord} model */
+					/** @typedef {ActiveRecord} model */
 					var model = _class.instantiate(row);
 
 					_class.populateRecord(model, row);
@@ -1548,7 +1551,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveQuery', /** @lends Jii.sql.Activ
 	},
 
 	/**
-	 * @param {Jii.sql.ActiveRecord} model
+	 * @param {ActiveRecord} model
 	 * @param {[]} _with
 	 * @returns {Object.<string, Jii.sql.ActiveQuery>}
 	 */

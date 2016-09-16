@@ -7,6 +7,7 @@
 
 var Jii = require('jii');
 var Component = require('jii/base/Component');
+var BaseSchema = require('./BaseSchema');
 
 /**
  * Migration is the base class for representing a database migration.
@@ -32,7 +33,7 @@ var Component = require('jii/base/Component');
  * applying migrations.
  *
  * @class Jii.sql.Migration
- * @extends Jii.base.Component
+ * @extends Component
  */
 module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migration.prototype */{
 
@@ -55,7 +56,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
         this.db = this.db === null ?
             Jii.app.get('db') :
             (
-                this.db instanceof Jii.base.Component ?
+                this.db instanceof Component ?
                     this.db :
                     Jii.createObject(this.db)
             );
@@ -396,7 +397,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     primaryKey(length) {
         length = length || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_PK, length);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_PK, length);
     },
 
     /**
@@ -409,7 +410,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     bigPrimaryKey(length) {
         length = length || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_BIGPK, length);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_BIGPK, length);
     },
 
     /**
@@ -422,7 +423,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     string(length) {
         length = length || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_STRING, length);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_STRING, length);
     },
 
     /**
@@ -431,7 +432,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
      * @since 2.0.6
      */
     text() {
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_TEXT);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_TEXT);
     },
 
     /**
@@ -444,7 +445,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     smallInteger(length) {
         length = length || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_SMALLINT, length);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_SMALLINT, length);
     },
 
     /**
@@ -457,7 +458,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     integer(length) {
         length = length || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_INTEGER, length);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_INTEGER, length);
     },
 
     /**
@@ -470,7 +471,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     bigInteger(length) {
         length = length || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_BIGINT, length);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_BIGINT, length);
     },
 
     /**
@@ -483,7 +484,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     float(precision) {
         precision = precision || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_FLOAT, precision);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_FLOAT, precision);
     },
 
     /**
@@ -496,7 +497,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     double(precision) {
         precision = precision || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_DOUBLE, precision);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_DOUBLE, precision);
     },
 
     /**
@@ -521,7 +522,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
         if (scale !== null) {
             length.push(scale);
         }
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_DECIMAL, length);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_DECIMAL, length);
     },
 
     /**
@@ -534,7 +535,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     dateTime(precision) {
         precision = precision || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_DATETIME, precision);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_DATETIME, precision);
     },
 
     /**
@@ -547,7 +548,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     timestamp(precision) {
         precision = precision || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_TIMESTAMP, precision);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_TIMESTAMP, precision);
     },
 
     /**
@@ -560,7 +561,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     time(precision) {
         precision = precision || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_TIME, precision);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_TIME, precision);
     },
 
     /**
@@ -569,7 +570,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
      * @since 2.0.6
      */
     date() {
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_DATE);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_DATE);
     },
 
     /**
@@ -582,7 +583,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     binary(length) {
         length = length || null;
 
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_BINARY, length);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_BINARY, length);
     },
 
     /**
@@ -591,7 +592,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
      * @since 2.0.6
      */
     boolean() {
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_BOOLEAN);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_BOOLEAN);
     },
 
     /**
@@ -616,7 +617,7 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
         if (scale !== null) {
             length.push(scale);
         }
-        return this.db.getSchema().createColumnSchemaBuilder(Jii.sql.BaseSchema.TYPE_MONEY, length);
+        return this.db.getSchema().createColumnSchemaBuilder(BaseSchema.TYPE_MONEY, length);
     },
 
     _time() {

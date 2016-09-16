@@ -2,6 +2,7 @@
 'use strict';
 
 var Jii = require('jii');
+var SqlQueryException = require('../SqlQueryException');
 var _values = require('lodash/values');
 var _map = require('lodash/map');
 var BaseConnection = require('../BaseConnection');
@@ -112,7 +113,7 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Connection', /** @lends Jii.sql.
 					Jii.error('Database query error, sql: `' + sql + '`, error: ' + String(err));
 
 					if (method === 'execute' || method === null) {
-						reject(new Jii.sql.SqlQueryException(err));
+						reject(new SqlQueryException(err));
 					} else {
 						resolve(false);
 					}

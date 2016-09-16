@@ -1,6 +1,7 @@
 'use strict';
 
 var Jii = require('jii');
+var InvalidParamException = require('jii/exceptions/InvalidParamException');
 var Action = require('jii/base/Action');
 var Command = require('./Command');
 
@@ -23,7 +24,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.ActiveRecordAction', /** @lends
         var modelClass = Jii.namespace(context.request.get('modelClassName'));
 
         switch (context.request.get('method')) {
-            case Jii.sql.remote.Command.METHOD_INSERT:
+            case Command.METHOD_INSERT:
                 var model = new modelClass();
                 model.setAttributes(context.request.get('values'));
                 return model.save().then(success => {
@@ -33,7 +34,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.ActiveRecordAction', /** @lends
                     };
                 });
 
-            case Jii.sql.remote.Command.METHOD_UPDATE:
+            case Command.METHOD_UPDATE:
                 return modelClass.findOne(context.request.get('primaryKey')).then(model => {
                     if (!model) {
                         return {
@@ -51,7 +52,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.ActiveRecordAction', /** @lends
                     })
                 });
 
-            case Jii.sql.remote.Command.METHOD_DELETE:
+            case Command.METHOD_DELETE:
                 return modelClass.findOne(context.request.get('primaryKey')).then(model => {
                     return model ? model.delete() : false;
                 }).then(success => {
@@ -61,7 +62,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.ActiveRecordAction', /** @lends
                 });
         }
 
-        throw new Jii.exceptions.InvalidParamException('Unknown method `' + context.request.get('method') + '` in ' + this.className());
+        throw new InvalidParamException('Unknown method `' + context.request.get('method') + '` in ' + this.className());
     }
 
 
