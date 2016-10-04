@@ -258,7 +258,7 @@ module.exports = Jii.defineClass('QueryBuilder', /** @lends QueryBuilder.prototy
 	 */
 	update(table, columns, condition, params) {
 		var tableSchema = this.db.getTableSchema(table);
-		var columnSchemas = tableSchema !== null ? tableSchema.columns : [];
+		var columnSchemas = tableSchema !== null ? tableSchema.columns : {};
 		var lines = [];
 
 		_each(columns, (value, name) => {

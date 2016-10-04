@@ -7,7 +7,7 @@ module.exports = {
 		fixture: __dirname + '/fixture/cubrid.sql'
 	},*/
 	mysql: {
-		className: 'Jii.sql.mysql.Connection',
+		className: require('jii-ar-sql/server/mysql/Connection'),
 		database: 'jiitest',
 		username: 'jiitest',
 		password: 'jiitest',

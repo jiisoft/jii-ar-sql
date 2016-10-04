@@ -1,10 +1,5 @@
-
 'use strict';
 
-/**
- * @namespace Jii
- * @ignore
- */
 var Jii = require('jii');
 var BaseSchema = require('../../server/BaseSchema');
 var ColumnSchema = require('../../server/ColumnSchema');
@@ -16,11 +11,7 @@ var _each = require('lodash/each');
 var _has = require('lodash/has');
 var _isEmpty = require('lodash/isEmpty');
 var _indexOf = require('lodash/indexOf');
-require('./bootstrap');
-
-var tests = Jii.namespace('tests');
-
-require('./DatabaseTestCase.js');
+var DatabaseTestCase = require('../DatabaseTestCase.js');
 
 /**
  * @class tests.unit.QueryBuilderTest
@@ -28,10 +19,7 @@ require('./DatabaseTestCase.js');
  */
 var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
-	__extends: 'tests.unit.DatabaseTestCase',
-
-	__static: {
-	},
+	__extends: DatabaseTestCase,
 
 	/**
 	 * @throws \Exception

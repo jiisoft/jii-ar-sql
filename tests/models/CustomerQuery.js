@@ -1,24 +1,15 @@
-
 'use strict';
 
-/**
- * @namespace Jii
- * @ignore
- */
 var Jii = require('jii');
-
-var tests = Jii.namespace('tests');
+var ActiveQuery = require('jii-ar-sql/ActiveQuery');
 
 /**
  * @class tests.unit.models.CustomerQuery
  * @extends Jii.sql.ActiveQuery
  */
-var self = Jii.defineClass('tests.unit.models.CustomerQuery', {
+module.exports = Jii.defineClass('tests.unit.models.CustomerQuery', {
 
-	__extends: 'Jii.sql.ActiveQuery',
-
-	__static: {
-	},
+	__extends: ActiveQuery,
 
 	active: function () {
 		this.andWhere('status=1');

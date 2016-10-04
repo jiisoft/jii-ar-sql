@@ -14,6 +14,7 @@ var _isUndefined = require('lodash/isUndefined');
 var _each = require('lodash/each');
 var _has = require('lodash/has');
 var Object = require('jii/base/Object');
+var ColumnSchema = require('./ColumnSchema');
 
 /**
  * @class Jii.sql.BaseSchema
@@ -248,7 +249,7 @@ module.exports = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSc
 	 * @return {Jii.sql.ColumnSchema}
 	 */
 	_createColumnSchema() {
-		return Jii.createObject('Jii.sql.ColumnSchema');
+		return Jii.createObject(ColumnSchema);
 	},
 
 	/**

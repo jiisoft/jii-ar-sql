@@ -1,28 +1,22 @@
-
 'use strict';
 
-/**
- * @namespace Jii
- * @ignore
- */
 var Jii = require('jii');
 var _trim = require('lodash/trim');
 var _clone = require('lodash/clone');
 var _isUndefined = require('lodash/isUndefined');
-require('./bootstrap');
-
 var fs = require('fs');
 var config = require('./config');
+var UnitTest = require('jii/server/base/UnitTest');
 
-var tests = Jii.namespace('tests');
+require('./bootstrap');
 
 /**
  * @class tests.unit.DatabaseTestCase
  * @extends Jii.base.UnitTest
  */
-var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
+var DatabaseTestCase = Jii.defineClass('tests.unit.DatabaseTestCase', {
 
-	__extends: 'Jii.base.UnitTest',
+	__extends: UnitTest,
 
 	database: null,
 	driverName: 'mysql',
@@ -67,7 +61,7 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 		}
 
 		var fixture = null;
-		var config = this.database;
+		var config = _clone(this.database);
 
 		if (config.fixture) {
 			fixture = config.fixture;
@@ -118,4 +112,4 @@ var self = Jii.defineClass('tests.unit.DatabaseTestCase', {
 
 });
 
-module.exports = new self().exports();
+module.exports = DatabaseTestCase;

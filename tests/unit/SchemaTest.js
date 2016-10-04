@@ -1,10 +1,5 @@
-
 'use strict';
 
-/**
- * @namespace Jii
- * @ignore
- */
 var Jii = require('jii');
 var TableSchema = require('../../server/TableSchema');
 var Expression = require('../../Expression');
@@ -14,11 +9,7 @@ var _keys = require('lodash/keys');
 var _isArray = require('lodash/isArray');
 var _isObject = require('lodash/isObject');
 var _indexOf = require('lodash/indexOf');
-require('./bootstrap');
-
-var tests = Jii.namespace('tests');
-
-require('./DatabaseTestCase.js');
+var DatabaseTestCase = require('../DatabaseTestCase.js');
 
 /**
  * @class tests.unit.QueryBuilderTest
@@ -26,10 +17,7 @@ require('./DatabaseTestCase.js');
  */
 var self = Jii.defineClass('tests.unit.QueryBuilderTest', {
 
-	__extends: 'tests.unit.DatabaseTestCase',
-
-	__static: {
-	},
+	__extends: DatabaseTestCase,
 
 	testGetTableNames: function (test) {
 		this.getConnection().then(function(db) {

@@ -7,6 +7,7 @@ var _values = require('lodash/values');
 var _map = require('lodash/map');
 var BaseConnection = require('../BaseConnection');
 var mysql = require('mysql');
+var Schema = require('./Schema');
 
 /**
  *
@@ -35,7 +36,7 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Connection', /** @lends Jii.sql.
 	/**
 	 * @type {string|object}
 	 */
-	schemaClass: 'Jii.sql.mysql.Schema',
+	schemaClass: Schema,
 
 	/**
 	 * @type {string}
@@ -104,8 +105,6 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Connection', /** @lends Jii.sql.
 	 */
 	exec(sql, method) {
 		method = method || null;
-
-		//console.log(sql);
 
 		return new Promise((resolve, reject) => {
 			this._connection.query(sql, (err, rows) => {

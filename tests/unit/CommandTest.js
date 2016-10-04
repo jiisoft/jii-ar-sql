@@ -1,17 +1,8 @@
-
 'use strict';
 
-/**
- * @namespace Jii
- * @ignore
- */
 var Jii = require('jii');
 var SqlQueryException = require('../../server/SqlQueryException');
-require('./bootstrap');
-
-require('./DatabaseTestCase.js');
-
-var tests = Jii.namespace('tests');
+var DatabaseTestCase = require('../DatabaseTestCase.js');
 
 /**
  * @class tests.unit.CommandTest
@@ -19,10 +10,7 @@ var tests = Jii.namespace('tests');
  */
 var self = Jii.defineClass('tests.unit.CommandTest', {
 
-	__extends: 'tests.unit.DatabaseTestCase',
-
-	__static: {
-	},
+	__extends: DatabaseTestCase,
 
 	testConstruct: function (test) {
 		this.getConnection(false).then(function(db) {

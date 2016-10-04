@@ -5,6 +5,7 @@ var Jii = require('jii');
 var ApplicationException = require('jii/exceptions/ApplicationException');
 var Command = require('./Command');
 var _isString = require('lodash/isString');
+var _isFunction = require('lodash/isFunction');
 var _each = require('lodash/each');
 var Component = require('jii/base/Component');
 
@@ -242,7 +243,7 @@ module.exports = Jii.defineClass('Jii.sql.BaseConnection', /** @lends Jii.sql.Ba
 	 */
 	getSchema() {
 		if (this._schema === null) {
-			var config = _isString(this.schemaClass) ?
+			var config = _isString(this.schemaClass) || _isFunction(this.schemaClass) ?
 				{ className: this.schemaClass } :
 				this.schemaClass;
 			config.db = this;

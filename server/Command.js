@@ -350,6 +350,7 @@ module.exports = Jii.defineClass('Jii.sql.Command', /** @lends Jii.sql.Command.p
 		params = params || {};
 
 		return this.db.getQueryBuilder().update(table, columns, condition, params).then(sql => {
+
 			this.setSql(sql);
 			this.bindValues(params);
 

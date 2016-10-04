@@ -63,40 +63,6 @@ module.exports = Jii.defineClass('Jii.sql.ColumnSchema', /** @lends Jii.sql.Colu
 	/**
 	 * @var {string} comment of this column. Not all DBMS support this.
 	 */
-	comment: null,
-
-	/**
-	 * Converts the input value according to [[jsType]].
-	 * If the value is null or an [[Expression]], it will not be converted.
-	 * @param {*} value input value
-	 * @return {*} converted value
-	 */
-	typecast(value) {
-		if (value === '' && this.type !== BaseSchema.TYPE_TEXT &&
-			this.type !== BaseSchema.TYPE_STRING &&
-			this.type !== BaseSchema.TYPE_BINARY) {
-			return null;
-		}
-
-		// @todo php->js types
-		if (value === null || typeof(value) === this.jsType || value instanceof Expression) {
-			return value;
-		}
-
-		switch (this.jsType) {
-			case 'string':
-				return String(value);
-
-			case 'number':
-				return _isBoolean(value) ?
-					(value ? 1 : 0) :
-					parseFloat(value);
-
-			case 'boolean':
-				return !!value;
-		}
-
-		return value;
-	}
+	comment: null
 
 });

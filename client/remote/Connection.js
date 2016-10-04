@@ -59,7 +59,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql
     getRootCollection(modelClassName) {
         var modelClass = Jii.namespace(modelClassName);
         if (!modelClass.tableName) {
-            throw new InvalidParamException('Wrong model class for create collection: ' + modelClassName);
+            throw new InvalidParamException('Wrong model class for create collection: ' + modelClass.className());
         }
 
         var tableName = modelClass.tableName();
@@ -68,7 +68,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql
         }
 
         if (!this._rootCollections[tableName]) {
-            this._rootCollections[tableName] = new Collection([], {modelClass: modelClassName});
+            this._rootCollections[tableName] = new Collection([], {modelClass: modelClass});
         }
         return this._rootCollections[tableName];
     },
