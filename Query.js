@@ -7,7 +7,7 @@
 'use strict';
 
 var Jii = require('jii');
-var Expression = require('./Expression');
+var Expression = require('jii-model/model/Expression');
 var _isString = require('lodash/isString');
 var _isEmpty = require('lodash/isEmpty');
 var _isArray = require('lodash/isArray');
@@ -471,7 +471,7 @@ module.exports = Jii.defineClass('Jii.sql.Query', /** @lends Jii.sql.Query.proto
 	/**
 	 * Queries a scalar value by setting [[select]] first.
 	 * Restores the value of select to make this query reusable.
-	 * @param {string|Jii.sql.Expression} selectExpression
+	 * @param {string|Jii.model.Expression} selectExpression
 	 * @param {Jii.sql.Connection|null} db
 	 * @returns {boolean|string}
 	 */

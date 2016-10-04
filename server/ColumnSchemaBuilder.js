@@ -6,7 +6,7 @@
 'use strict';
 
 var Jii = require('jii');
-var Expression = require('../Expression');
+var Expression = require('jii-model/model/Expression');
 var _isArray = require('lodash/isArray');
 var Object = require('jii/base/Object');
 

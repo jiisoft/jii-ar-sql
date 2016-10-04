@@ -7,7 +7,7 @@
 
 var Jii = require('jii');
 var BaseSchema = require('./BaseSchema');
-var Expression = require('../Expression');
+var Expression = require('jii-model/model/Expression');
 var _isBoolean = require('lodash/isBoolean');
 var ModelAttributeSchema = require('jii-model/base/ModelAttributeSchema');
 

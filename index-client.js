@@ -4,7 +4,6 @@ module.exports = require('jii');
 if (!process.env.JII_NO_NAMESPACE) {
     require('./ActiveQuery.js');
     require('./ActiveRecord.js');
-    require('./AfterSaveEvent.js');
     require('./Expression.js');
     require('./FilterBuilder.js');
     require('./Query.js');

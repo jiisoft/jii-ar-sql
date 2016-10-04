@@ -19,7 +19,7 @@ var _some = require('lodash/some');
 var _has = require('lodash/has');
 var Object = require('jii/base/Object');
 var Query = require('./Query');
-var Expression = require('./Expression');
+var Expression = require('jii-model/model/Expression');
 var Model = require('jii-model/base/Model');
 
 /**

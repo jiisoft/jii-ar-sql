@@ -2,7 +2,7 @@
 
 var Jii = require('jii');
 var TableSchema = require('../../server/TableSchema');
-var Expression = require('../../Expression');
+var Expression = require('jii-model/model/Expression');
 var _each = require('lodash/each');
 var _has = require('lodash/has');
 var _keys = require('lodash/keys');

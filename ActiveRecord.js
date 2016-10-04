@@ -6,7 +6,7 @@
 'use strict';
 
 var Jii = require('jii');
-var Expression = require('./Expression');
+var Expression = require('jii-model/model/Expression');
 var InvalidConfigException = require('jii/exceptions/InvalidConfigException');
 var _isEmpty = require('lodash/isEmpty');
 var _each = require('lodash/each');
