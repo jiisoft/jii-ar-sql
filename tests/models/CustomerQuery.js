@@ -1,11 +1,11 @@
 'use strict';
 
 var Jii = require('jii');
-var ActiveQuery = require('jii-ar-sql/ActiveQuery');
+var ActiveQuery = require('jii-model/base/ActiveQuery');
 
 /**
  * @class tests.unit.models.CustomerQuery
- * @extends Jii.sql.ActiveQuery
+ * @extends Jii.base.ActiveQuery
  */
 module.exports = Jii.defineClass('tests.unit.models.CustomerQuery', {
 

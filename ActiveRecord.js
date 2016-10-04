@@ -42,7 +42,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveRecord', /** @lends Jii.sql.Acti
 		 *
 		 * @param {string} sql the SQL statement to be executed
 		 * @param {[]} params parameters to be bound to the SQL statement during execution.
-		 * @returns {Jii.sql.ActiveQuery} the newly created [[ActiveQuery]] instance
+		 * @returns {Jii.base.ActiveQuery} the newly created [[ActiveQuery]] instance
 		 */
 		findBySql(sql, params) {
 			params = params || [];
@@ -131,7 +131,7 @@ module.exports = Jii.defineClass('Jii.sql.ActiveRecord', /** @lends Jii.sql.Acti
 		 * @inheritdoc
 		 */
 		find() {
-			var ActiveQuery = require('./ActiveQuery');
+			var ActiveQuery = require('jii-model/base/ActiveQuery');
 			return new ActiveQuery(this);
 		},
 

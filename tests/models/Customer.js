@@ -63,11 +63,11 @@ module.exports = Jii.defineClass('tests.unit.models.Customer', {
 
 	// deeply nested table relation
 	getOrderItems: function () {
-		/** @typedef {Jii.sql.ActiveQuery} rel */
+		/** @typedef {Jii.base.ActiveQuery} rel */
 		var rel = this.hasMany(Item, {id: 'item_id'});
 
 		return rel.viaTable('order_item', {order_id: 'id'}, function (q) {
-			/** @typedef {Jii.sql.ActiveQuery} q */
+			/** @typedef {Jii.base.ActiveQuery} q */
 			q.viaTable('order', {customer_id: 'id'});
 		}).orderBy('id');
 	},

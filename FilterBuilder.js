@@ -18,7 +18,7 @@ var _each = require('lodash/each');
 var _some = require('lodash/some');
 var _has = require('lodash/has');
 var Object = require('jii/base/Object');
-var Query = require('./Query');
+var Query = require('jii-model/base/Query');
 var Expression = require('jii-model/model/Expression');
 var Model = require('jii-model/base/Model');
 
@@ -47,7 +47,7 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 
     prepare(query) {
         // @todo prepare, tmp
-		var ActiveQuery = require('./ActiveQuery');
+		var ActiveQuery = require('jii-model/base/ActiveQuery');
         if (query instanceof ActiveQuery) {
             query._filterByModels([query.primaryModel]);
         }
