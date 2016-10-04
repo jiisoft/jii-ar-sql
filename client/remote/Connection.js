@@ -6,6 +6,7 @@ var InvalidParamException = require('jii/exceptions/InvalidParamException');
 var Collection = require('jii-model/base/Collection');
 var Command = require('./Command');
 var Component = require('jii/base/Component');
+var _each = require('lodash/each');
 
 /**
  *
@@ -38,6 +39,11 @@ module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql
      */
     _rootCollections: {},
 
+    /**
+     * @type {object}
+     */
+    _data: {},
+
     init() {
         this.schema = Jii.createObject(this.schema);
     },
@@ -69,8 +75,25 @@ module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql
 
         if (!this._rootCollections[tableName]) {
             this._rootCollections[tableName] = new Collection([], {modelClass: modelClass});
+            if (this._data[tableName]) {
+                this._rootCollections[tableName].set(this._data[tableName]);
+            }
         }
         return this._rootCollections[tableName];
+    },
+
+    /**
+     * Prepare data for root collections
+     * @param {object} data
+     */
+    setData(data) {
+        _each(data, (items, tableName) => {
+            if (this._rootCollections[tableName]) {
+                this._rootCollections[tableName].set(items);
+            } else {
+                this._data[tableName] = items;
+            }
+        });
     },
 
     /**
