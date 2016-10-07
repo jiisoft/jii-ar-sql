@@ -6,7 +6,7 @@ var _clone = require('lodash/clone');
 var _isUndefined = require('lodash/isUndefined');
 var fs = require('fs');
 var config = require('./config');
-var UnitTest = require('jii/server/base/UnitTest');
+var UnitTest = require('jii/base/UnitTest');
 
 require('./bootstrap');
 

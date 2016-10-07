@@ -26,7 +26,7 @@ var Model = require('jii-model/base/Model');
  * @class Jii.sql.FilterBuilder
  * @extends Jii.base.Object
  */
-module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.FilterBuilder.prototype */{
+var FilterBuilder = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.FilterBuilder.prototype */{
 
 	__extends: Object,
 
@@ -388,3 +388,5 @@ module.exports = Jii.defineClass('Jii.sql.FilterBuilder', /** @lends Jii.sql.Fil
 	}
 
 });
+
+module.exports = FilterBuilder;

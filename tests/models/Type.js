@@ -7,7 +7,7 @@ var ActiveRecord = require('./ActiveRecord.js');
  * @class tests.unit.models.Type
  * @extends tests.unit.models.ActiveRecord
  */
-module.exports = Jii.defineClass('tests.unit.models.Type', {
+var Type = Jii.defineClass('tests.unit.models.Type', {
 
 	__extends: ActiveRecord,
 
@@ -20,3 +20,5 @@ module.exports = Jii.defineClass('tests.unit.models.Type', {
 	}
 
 });
+
+module.exports = Type;

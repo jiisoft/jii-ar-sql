@@ -13,7 +13,7 @@ var _each = require('lodash/each');
  * @class Jii.sql.remote.Connection
  * @extends Jii.base.Component
  */
-module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql.remote.Connection.prototype */{
+var Connection = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql.remote.Connection.prototype */{
 
 	__extends: Component,
 
@@ -74,7 +74,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql
         }
 
         if (!this._rootCollections[tableName]) {
-            this._rootCollections[tableName] = new Collection([], {modelClass: modelClass});
+            this._rootCollections[tableName] = new Collection(null, {modelClass: modelClass});
             if (this._data[tableName]) {
                 this._rootCollections[tableName].set(this._data[tableName]);
             }
@@ -139,3 +139,5 @@ module.exports = Jii.defineClass('Jii.sql.remote.Connection', /** @lends Jii.sql
     }
 
 });
+
+module.exports = Connection;

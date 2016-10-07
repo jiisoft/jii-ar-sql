@@ -12,8 +12,10 @@ var ApplicationException = require('jii/exceptions/ApplicationException');
  * @class Jii.sql.SqlQueryException
  * @extends Jii.exceptions.ApplicationException
  */
-module.exports = Jii.defineClass('Jii.sql.SqlQueryException', /** @lends Jii.sql.SqlQueryException.prototype */{
+var SqlQueryException = Jii.defineClass('Jii.sql.SqlQueryException', /** @lends Jii.sql.SqlQueryException.prototype */{
 
 	__extends: ApplicationException
 
 });
+
+module.exports = SqlQueryException;

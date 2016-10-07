@@ -22,7 +22,7 @@ var BaseSchema = require('../BaseSchema');
  * @class Jii.sql.mysql.Schema
  * @extends BaseSchema
  */
-module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysql.Schema.prototype */{
+var Schema = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysql.Schema.prototype */{
 
 	__extends: BaseSchema,
 
@@ -365,3 +365,5 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Schema', /** @lends Jii.sql.mysq
 	}
 
 });
+
+module.exports = Schema;

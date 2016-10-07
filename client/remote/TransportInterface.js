@@ -8,7 +8,7 @@ var Component = require('jii/base/Component');
  * @interface Jii.sql.remote.TransportInterface
  * @extends Jii.base.Component
  */
-module.exports = Jii.defineClass('Jii.sql.remote.TransportInterface', /** @lends Jii.sql.remote.TransportInterface.prototype */{
+var TransportInterface = Jii.defineClass('Jii.sql.remote.TransportInterface', /** @lends Jii.sql.remote.TransportInterface.prototype */{
 
 	__extends: Component,
 
@@ -22,3 +22,5 @@ module.exports = Jii.defineClass('Jii.sql.remote.TransportInterface', /** @lends
 	}
 
 });
+
+module.exports = TransportInterface;

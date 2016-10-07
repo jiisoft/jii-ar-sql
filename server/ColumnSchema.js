@@ -15,7 +15,7 @@ var ModelAttributeSchema = require('jii-model/base/ModelAttributeSchema');
  * @class Jii.sql.ColumnSchema
  * @extends Jii.base.ModelAttributeSchema
  */
-module.exports = Jii.defineClass('Jii.sql.ColumnSchema', /** @lends Jii.sql.ColumnSchema.prototype */{
+var ColumnSchema = Jii.defineClass('Jii.sql.ColumnSchema', /** @lends Jii.sql.ColumnSchema.prototype */{
 
 	__extends: ModelAttributeSchema,
 
@@ -66,3 +66,5 @@ module.exports = Jii.defineClass('Jii.sql.ColumnSchema', /** @lends Jii.sql.Colu
 	comment: null
 
 });
+
+module.exports = ColumnSchema;

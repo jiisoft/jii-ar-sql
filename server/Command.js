@@ -42,7 +42,7 @@ var Component = require('jii/base/Component');
  * @class Jii.sql.Command
  * @extends Jii.base.Component
  */
-module.exports = Jii.defineClass('Jii.sql.Command', /** @lends Jii.sql.Command.prototype */{
+var Command = Jii.defineClass('Jii.sql.Command', /** @lends Jii.sql.Command.prototype */{
 
 	__extends: Component,
 
@@ -360,7 +360,7 @@ module.exports = Jii.defineClass('Jii.sql.Command', /** @lends Jii.sql.Command.p
 
     /**
      *
-     * @param {Jii.base.ActiveRecord} model
+     * @param {Jii.base.BaseActiveRecord} model
      * @param {object} values
      * @returns {static}
      */
@@ -400,7 +400,7 @@ module.exports = Jii.defineClass('Jii.sql.Command', /** @lends Jii.sql.Command.p
 
     /**
      *
-     * @param {Jii.base.ActiveRecord} model
+     * @param {Jii.base.BaseActiveRecord} model
      * @returns {static}
      */
     deleteModel(model) {
@@ -665,3 +665,5 @@ module.exports = Jii.defineClass('Jii.sql.Command', /** @lends Jii.sql.Command.p
 	}
 
 });
+
+module.exports = Command;

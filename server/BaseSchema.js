@@ -20,7 +20,7 @@ var ColumnSchema = require('./ColumnSchema');
  * @class Jii.sql.BaseSchema
  * @extends Jii.base.Object
  */
-module.exports = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSchema.prototype */{
+var BaseSchema = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSchema.prototype */{
 
 	__extends: Object,
 
@@ -490,3 +490,5 @@ module.exports = Jii.defineClass('Jii.sql.BaseSchema', /** @lends Jii.sql.BaseSc
 	 }*/
 
 });
+
+module.exports = BaseSchema;

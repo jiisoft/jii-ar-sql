@@ -87,7 +87,7 @@ var Component = require('jii/base/Component');
  * @class Jii.sql.BaseConnection
  * @extends Jii.base.Component
  */
-module.exports = Jii.defineClass('Jii.sql.BaseConnection', /** @lends Jii.sql.BaseConnection.prototype */{
+var BaseConnection = Jii.defineClass('Jii.sql.BaseConnection', /** @lends Jii.sql.BaseConnection.prototype */{
 
 	__extends: Component,
 
@@ -376,3 +376,5 @@ module.exports = Jii.defineClass('Jii.sql.BaseConnection', /** @lends Jii.sql.Ba
 	}
 
 });
+
+module.exports = BaseConnection;

@@ -10,7 +10,7 @@ var OrderItemWithNullFK = require('./OrderItemWithNullFK');
  * @class tests.unit.models.Order
  * @extends tests.unit.models.ActiveRecord
  */
-module.exports = Jii.defineClass('tests.unit.models.Order', {
+var Order = Jii.defineClass('tests.unit.models.Order', {
 
 	__extends: ActiveRecord,
 
@@ -114,3 +114,5 @@ module.exports = Jii.defineClass('tests.unit.models.Order', {
 	}
 
 });
+
+module.exports = Order;

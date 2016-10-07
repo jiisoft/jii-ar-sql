@@ -10,7 +10,7 @@ var Order = require('./Order');
  * @class tests.unit.models.Category
  * @extends tests.unit.models.ActiveRecord
  */
-module.exports = Jii.defineClass('tests.unit.models.Category', {
+var Category = Jii.defineClass('tests.unit.models.Category', {
 
 	__extends: ActiveRecord,
 
@@ -39,3 +39,5 @@ module.exports = Jii.defineClass('tests.unit.models.Category', {
 	}
 
 });
+
+module.exports = Category;

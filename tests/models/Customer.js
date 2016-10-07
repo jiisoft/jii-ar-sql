@@ -12,7 +12,7 @@ var Item = require('./Item.js');
  * @class tests.unit.models.Customer
  * @extends tests.unit.models.ActiveRecord
  */
-module.exports = Jii.defineClass('tests.unit.models.Customer', {
+var Customer = Jii.defineClass('tests.unit.models.Customer', {
 
 	__extends: ActiveRecord,
 
@@ -79,3 +79,5 @@ module.exports = Jii.defineClass('tests.unit.models.Customer', {
 	}
 
 });
+
+module.exports = Customer;

@@ -9,7 +9,7 @@ var Command = require('./Command');
  * @class Jii.sql.remote.ActiveRecordAction
  * @extends Jii.base.Action
  */
-module.exports = Jii.defineClass('Jii.sql.remote.ActiveRecordAction', /** @lends Jii.sql.remote.ActiveRecordAction.prototype */{
+var ActiveRecordAction = Jii.defineClass('Jii.sql.remote.ActiveRecordAction', /** @lends Jii.sql.remote.ActiveRecordAction.prototype */{
 
     __extends: Action,
 
@@ -67,3 +67,5 @@ module.exports = Jii.defineClass('Jii.sql.remote.ActiveRecordAction', /** @lends
 
 
 });
+
+module.exports = ActiveRecordAction;

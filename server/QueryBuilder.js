@@ -31,14 +31,14 @@ var _trimStart = require('lodash/trimStart');
 var Object = require('jii/base/Object');
 
 /**
- * @class QueryBuilder
+ * @class Jii.sql.QueryBuilder
  * @extends Jii.base.Object
  */
-module.exports = Jii.defineClass('QueryBuilder', /** @lends QueryBuilder.prototype */{
+var QueryBuilder = Jii.defineClass('Jii.sql.QueryBuilder', /** @lends Jii.sql.QueryBuilder.prototype */{
 
 	__extends: Object,
 
-	__static: /** @lends QueryBuilder */{
+	__static: /** @lends Jii.sql.QueryBuilder */{
 
 		/**
 		 * The prefix for automatically generated query binding parameters.
@@ -1350,3 +1350,5 @@ module.exports = Jii.defineClass('QueryBuilder', /** @lends QueryBuilder.prototy
 	}
 
 });
+
+module.exports = QueryBuilder;

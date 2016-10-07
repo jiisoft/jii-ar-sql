@@ -7,7 +7,7 @@ var ActiveRecord = require('./ActiveRecord.js');
  * @class tests.unit.models.NullValues
  * @extends tests.unit.models.ActiveRecord
  */
-module.exports = Jii.defineClass('tests.unit.models.NullValues', {
+var NullValues = Jii.defineClass('tests.unit.models.NullValues', {
 
 	__extends: ActiveRecord,
 
@@ -20,3 +20,5 @@ module.exports = Jii.defineClass('tests.unit.models.NullValues', {
 	}
 
 });
+
+module.exports = NullValues;

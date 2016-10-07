@@ -16,7 +16,7 @@ var BaseSchema = require('../BaseSchema');
  * @class Jii.sql.mysql.QueryBuilder
  * @extends Jii.sql.QueryBuilder
  */
-module.exports = Jii.defineClass('Jii.sql.mysql.QueryBuilder', /** @lends Jii.sql.mysql.QueryBuilder.prototype */{
+var QueryBuilder = Jii.defineClass('Jii.sql.mysql.QueryBuilder', /** @lends Jii.sql.mysql.QueryBuilder.prototype */{
 
 	__extends: QueryBuilder,
 
@@ -169,3 +169,5 @@ module.exports = Jii.defineClass('Jii.sql.mysql.QueryBuilder', /** @lends Jii.sq
 	}
 
 });
+
+module.exports = QueryBuilder;

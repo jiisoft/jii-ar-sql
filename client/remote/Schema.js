@@ -16,7 +16,7 @@ var Object = require('jii/base/Object');
  * @class Jii.sql.remote.Schema
  * @extends Jii.base.Object
  */
-module.exports = Jii.defineClass('Jii.sql.remote.Schema', /** @lends Jii.sql.remote.Schema.prototype */{
+var Schema = Jii.defineClass('Jii.sql.remote.Schema', /** @lends Jii.sql.remote.Schema.prototype */{
 
 	__extends: Object,
 
@@ -60,3 +60,5 @@ module.exports = Jii.defineClass('Jii.sql.remote.Schema', /** @lends Jii.sql.rem
     }
 
 });
+
+module.exports = Schema;

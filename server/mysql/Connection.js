@@ -14,7 +14,7 @@ var Schema = require('./Schema');
  * @class Jii.sql.mysql.Connection
  * @extends Jii.sql.BaseConnection
  */
-module.exports = Jii.defineClass('Jii.sql.mysql.Connection', /** @lends Jii.sql.mysql.Connection.prototype */{
+var Connection = Jii.defineClass('Jii.sql.mysql.Connection', /** @lends Jii.sql.mysql.Connection.prototype */{
 
 	__extends: BaseConnection,
 
@@ -154,3 +154,5 @@ module.exports = Jii.defineClass('Jii.sql.mysql.Connection', /** @lends Jii.sql.
 	}
 
 });
+
+module.exports = Connection;

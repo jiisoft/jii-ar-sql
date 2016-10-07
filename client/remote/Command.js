@@ -8,7 +8,7 @@ var Component = require('jii/base/Component');
  * @class Jii.sql.remote.Command
  * @extends Jii.base.Component
  */
-module.exports = Jii.defineClass('Jii.sql.remote.Command', /** @lends Jii.sql.remote.Command.prototype */{
+var Command = Jii.defineClass('Jii.sql.remote.Command', /** @lends Jii.sql.remote.Command.prototype */{
 
 	__extends: Component,
 
@@ -92,7 +92,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.Command', /** @lends Jii.sql.re
 
     /**
      *
-     * @param {Jii.base.ActiveRecord} model
+     * @param {Jii.base.BaseActiveRecord} model
      * @param {object} values
      * @returns {Promise}
      */
@@ -117,7 +117,7 @@ module.exports = Jii.defineClass('Jii.sql.remote.Command', /** @lends Jii.sql.re
 
     /**
      *
-     * @param {Jii.base.ActiveRecord} model
+     * @param {Jii.base.BaseActiveRecord} model
      * @returns {Promise}
      */
     deleteModel(model) {
@@ -129,3 +129,5 @@ module.exports = Jii.defineClass('Jii.sql.remote.Command', /** @lends Jii.sql.re
     }
 
 });
+
+module.exports = Command;

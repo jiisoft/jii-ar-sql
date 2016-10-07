@@ -8,7 +8,7 @@ var Item = require('./Item');
  * @class tests.unit.models.OrderItem
  * @extends tests.unit.models.ActiveRecord
  */
-module.exports = Jii.defineClass('tests.unit.models.OrderItem', {
+var OrderItem = Jii.defineClass('tests.unit.models.OrderItem', {
 
 	__extends: ActiveRecord,
 
@@ -30,3 +30,5 @@ module.exports = Jii.defineClass('tests.unit.models.OrderItem', {
 	}
 
 });
+
+module.exports = OrderItem;

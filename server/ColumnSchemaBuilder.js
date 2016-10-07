@@ -16,7 +16,7 @@ var Object = require('jii/base/Object');
  * @class Jii.sql.ColumnSchemaBuilder
  * @extends Jii.base.Object
  */
-module.exports = Jii.defineClass('Jii.sql.ColumnSchemaBuilder', /** @lends Jii.sql.ColumnSchemaBuilder.prototype */{
+var ColumnSchemaBuilder = Jii.defineClass('Jii.sql.ColumnSchemaBuilder', /** @lends Jii.sql.ColumnSchemaBuilder.prototype */{
 
 	__extends: Object,
 
@@ -197,3 +197,5 @@ module.exports = Jii.defineClass('Jii.sql.ColumnSchemaBuilder', /** @lends Jii.s
     }
 
 });
+
+module.exports = ColumnSchemaBuilder;

@@ -35,7 +35,7 @@ var BaseSchema = require('./BaseSchema');
  * @class Jii.sql.Migration
  * @extends Component
  */
-module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migration.prototype */{
+var Migration = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migration.prototype */{
 
 	__extends: Component,
 
@@ -625,3 +625,5 @@ module.exports = Jii.defineClass('Jii.sql.Migration', /** @lends Jii.sql.Migrati
     }
 
 });
+
+module.exports = Migration;

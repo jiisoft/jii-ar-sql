@@ -13,16 +13,16 @@ var _each = require('lodash/each');
 var _has = require('lodash/has');
 var _keys = require('lodash/keys');
 var _snakeCase = require('lodash/snakeCase');
-var ActiveRecord = require('jii-model/base/ActiveRecord');
+var BaseActiveRecord = require('jii-model/base/BaseActiveRecord');
 
 /**
  * @abstract
  * @class Jii.sql.ActiveRecord
- * @extends Jii.base.ActiveRecord
+ * @extends Jii.base.BaseActiveRecord
  */
-module.exports = Jii.defineClass('Jii.sql.ActiveRecord', /** @lends Jii.sql.ActiveRecord.prototype */{
+var ActiveRecord = Jii.defineClass('Jii.sql.ActiveRecord', /** @lends Jii.sql.ActiveRecord.prototype */{
 
-	__extends: ActiveRecord,
+	__extends: BaseActiveRecord,
 	
 	__static: /** @lends Jii.sql.ActiveRecord */{
 
@@ -518,3 +518,5 @@ module.exports = Jii.defineClass('Jii.sql.ActiveRecord', /** @lends Jii.sql.Acti
 	}
 
 });
+
+module.exports = ActiveRecord;

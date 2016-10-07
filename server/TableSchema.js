@@ -16,7 +16,7 @@ var ModelSchema = require('jii-model/base/ModelSchema');
  * @class Jii.sql.TableSchema
  * @extends Jii.base.ModelSchema
  */
-module.exports = Jii.defineClass('Jii.sql.TableSchema', /** @lends Jii.sql.TableSchema.prototype */{
+var TableSchema = Jii.defineClass('Jii.sql.TableSchema', /** @lends Jii.sql.TableSchema.prototype */{
 
 	__extends: ModelSchema,
 
@@ -76,3 +76,5 @@ module.exports = Jii.defineClass('Jii.sql.TableSchema', /** @lends Jii.sql.Table
 	}
 
 });
+
+module.exports = TableSchema;

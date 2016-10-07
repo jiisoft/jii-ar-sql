@@ -7,7 +7,7 @@ var ActiveRecord = require('./ActiveRecord.js');
  * @class tests.unit.models.OrderItemWithNullFK
  * @extends tests.unit.models.ActiveRecord
  */
-module.exports = Jii.defineClass('tests.unit.models.OrderItemWithNullFK', {
+var OrderItemWithNullFK = Jii.defineClass('tests.unit.models.OrderItemWithNullFK', {
 
 	__extends: ActiveRecord,
 
@@ -20,3 +20,5 @@ module.exports = Jii.defineClass('tests.unit.models.OrderItemWithNullFK', {
 	}
 
 });
+
+module.exports = OrderItemWithNullFK;

@@ -7,7 +7,7 @@ var ActiveQuery = require('jii-model/base/ActiveQuery');
  * @class tests.unit.models.CustomerQuery
  * @extends Jii.base.ActiveQuery
  */
-module.exports = Jii.defineClass('tests.unit.models.CustomerQuery', {
+var CustomerQuery = Jii.defineClass('tests.unit.models.CustomerQuery', {
 
 	__extends: ActiveQuery,
 
@@ -18,3 +18,5 @@ module.exports = Jii.defineClass('tests.unit.models.CustomerQuery', {
 	}
 
 });
+
+module.exports = CustomerQuery;

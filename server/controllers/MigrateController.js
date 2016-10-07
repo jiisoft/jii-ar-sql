@@ -52,7 +52,7 @@ var fs = require('fs');
  * @class Jii.sql.controllers.MigrateController
  * @extends Jii.sql.controllers.BaseMigrateController
  */
-module.exports = Jii.defineClass('Jii.sql.controllers.MigrateController', /** @lends Jii.sql.controllers.MigrateController.prototype */{
+var MigrateController = Jii.defineClass('Jii.sql.controllers.MigrateController', /** @lends Jii.sql.controllers.MigrateController.prototype */{
 
     __extends: BaseMigrateController,
 
@@ -195,3 +195,5 @@ module.exports = Jii.defineClass('Jii.sql.controllers.MigrateController', /** @l
     }
 
 });
+
+module.exports = MigrateController;
