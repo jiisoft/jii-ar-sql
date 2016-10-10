@@ -2,11 +2,8 @@ module.exports = require('jii');
 
 // AUTO-GENERATED Package files list
 if (!process.env.JII_NO_NAMESPACE) {
-    require('./ActiveQuery.js');
     require('./ActiveRecord.js');
-    require('./Expression.js');
     require('./FilterBuilder.js');
-    require('./Query.js');
     require('./client/remote/ActiveRecordAction.js');
     require('./client/remote/Command.js');
     require('./client/remote/Connection.js');
