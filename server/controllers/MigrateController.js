@@ -7,7 +7,7 @@
 
 var Jii = require('jii');
 var Component = require('jii/base/Component');
-var Console = require('jii-console/server/helpers/Console');
+var Console = require('jii/helpers/Console');
 var Query = require('jii-model/base/Query');
 var _each = require('lodash/each');
 var BaseMigrateController = require('./BaseMigrateController');

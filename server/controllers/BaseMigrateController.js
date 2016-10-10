@@ -6,15 +6,15 @@
 'use strict';
 
 var Jii = require('jii');
-var Exception = require('jii-console/server/Exception');
-var Console = require('jii-console/server/helpers/Console');
+var Exception = require('jii/console/Exception');
+var Console = require('jii/helpers/Console');
 var _isEmpty = require('lodash/isEmpty');
 var _each = require('lodash/each');
 var _keys = require('lodash/keys');
 var _size = require('lodash/size');
 var _template = require('lodash/template');
 var _values = require('lodash/values');
-var Controller = require('jii-console/server/Controller');
+var Controller = require('jii/console/Controller');
 var fs = require('fs');
 
 /**
@@ -561,9 +561,8 @@ var BaseMigrateController = Jii.defineClass('Jii.sql.controllers.BaseMigrateCont
      * jii migrate/new all # showing all new migrations
      * ```
      *
-     * @param {number} limit the maximum number of new migrations to be displayed.
      * If it is `all`, all available new migrations will be displayed.
-     * @throws \jii\console\Exception if invalid limit value passed
+     * @throws Jii.console.Exception if invalid limit value passed
      */
     actionNew(context) {
         var limit = context.request.get(0, 10);
