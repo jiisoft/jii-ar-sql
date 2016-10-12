@@ -94,11 +94,11 @@ var ActiveRecord = Jii.defineClass('Jii.sql.ActiveRecord', /** @lends Jii.sql.Ac
 			condition = condition || '';
 			params = params || {};
 
-			var n = 0;
+			let n = 0;
 			_each(counters, (value, name) => {
-				var params = {};
-				params[':bp{' + n + '}'] = value;
-				counters[name] = new Expression('[[' + name + ']]+:bp{' + n + '}', params);
+				counters[name] = new Expression('[[' + name + ']]+:bp{' + n + '}', {
+				    [':bp{' + n + '}']: value
+                });
 				n++;
 			});
 
