@@ -1,13 +1,13 @@
 'use strict';
 
 var Jii = require('jii');
-var ActiveRecord = require('jii-ar-sql/ActiveRecord');
+var ActiveRecord = require('../../ActiveRecord');
 
 /**
  * @class tests.unit.models.ActiveRecord
  * @extends Jii.sql.ActiveRecord
  */
-var ActiveRecord = Jii.defineClass('tests.unit.models.ActiveRecord', {
+var TestActiveRecord = Jii.defineClass('tests.unit.models.ActiveRecord', {
 
 	__extends: ActiveRecord,
 
@@ -26,4 +26,4 @@ var ActiveRecord = Jii.defineClass('tests.unit.models.ActiveRecord', {
 
 });
 
-module.exports = ActiveRecord;
+module.exports = TestActiveRecord;

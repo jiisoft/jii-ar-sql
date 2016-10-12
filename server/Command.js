@@ -113,10 +113,9 @@ var Command = Jii.defineClass('Jii.sql.Command', /** @lends Jii.sql.Command.prot
 
 		// Format `:name = 'John'`
 		var sql2 = this._sql;
-		_each(params, (value, name) => {
+		_each(Object.keys(params).sort().reverse(), name => {
 			name = name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-			var regExp = new RegExp(name, "g");
-			sql2 = sql2.replace(regExp, value);
+			sql2 = sql2.replace(new RegExp(name, "g"), params[name]);
 		});
 		return sql2;
 	},

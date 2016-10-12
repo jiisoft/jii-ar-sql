@@ -1,7 +1,7 @@
 'use strict';
 
 var Jii = require('jii');
-var Migration = require('jii-ar-sql/server/Migration')
+var Migration = require('../Migration')
 
 /**
  * @class <%= className %>
