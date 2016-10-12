@@ -68,10 +68,11 @@ var DatabaseTestCase = Jii.defineClass('tests.unit.DatabaseTestCase', {
 			delete config.fixture;
 		}
 
-		return this.prepareDatabase(config, fixture, open).then(function(db) {
+		return this.prepareDatabase(config, fixture, open).then(db => {
 			this.db = db;
-			return this.db;
-		}.bind(this));
+			return this.db.getSchema().refresh()
+				.then(() => db);
+		});
 	},
 
 	prepareDatabase: function (config, fixture, open) {
