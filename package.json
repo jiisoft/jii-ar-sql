@@ -1,33 +1,11 @@
 {
   "name": "jii-ar-sql",
   "version": "0.14.0",
-  "description": "Jii active record for SQL databases",
   "main": "index.js",
   "browser": "index-client.js",
   "author": "Vladimir Kozhin <affka@affka.ru>",
-  "scripts": {
-    "test": "nodeunit tests/unit"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jiisoft/jii-ar-sql"
-  },
-  "keywords": [
-    "yii",
-    "php",
-    "framework",
-    "javascript"
-  ],
-  "license": "MIT",
-  "homepage": "https://github.com/jiisoft/jii-ar-sql",
-  "bugs": {
-    "url": "https://github.com/jiisoft/jii-ar-sql/issues"
-  },
-  "devDependencies": {
-    "nodeunit": "^0.10.2"
-  },
-  "dependencies": {
-    "lodash": "^4.15.0",
-    "mysql": "^2.5.3"
   }
 }
